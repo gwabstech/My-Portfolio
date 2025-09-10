@@ -13,10 +13,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        window.firebase = { initializeApp, getAuth, signInAnonymously, getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, setLogLevel };
+        window.firebase = { initializeApp, getAuth, signInAnonymously, getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, setLogLevel, limit };
         window.React = React;
         window.ReactDOM = ReactDOM;
     </script>
@@ -198,7 +198,7 @@
                         const appId = firebaseConfig.projectId;
                         const reviewsPath = `/artifacts/${appId}/public/data/reviews`;
                         const reviewsCollection = firebase.collection(firestoreDb, reviewsPath);
-                        const q = firebase.query(reviewsCollection, firebase.orderBy('timestamp', 'desc'));
+                        const q = firebase.query(reviewsCollection, firebase.orderBy('timestamp', 'desc'), firebase.limit(6));
 
                         const unsubscribe = firebase.onSnapshot(q, (querySnapshot) => {
                             const fetchedReviews = [];
@@ -359,13 +359,13 @@
                         <h1 className="text-2xl font-bold text-gray-100">Abubakar</h1>
                         <div className="hidden md:flex space-x-8">
                             {navItems.map(item => (
-                                <a key={item.id} onClick={() => smoothScroll(item.id)} className="text-gray-400 hover-glow hover:text-indigo-400 transition-colors duration-300 cursor-pointer">
+                                <a key={item.id} onClick={() => smoothScroll(item.id)} className="text-gray-400 header-link hover-glow">
                                     {item.name}
                                 </a>
                             ))}
                         </div>
                         <div className="md:hidden">
-                            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-gray-400 hover:text-indigo-400 focus:outline-none">
+                            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-gray-400 focus:outline-none">
                                 <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
@@ -376,7 +376,7 @@
                         <div className="md:hidden bg-black bg-opacity-80 backdrop-blur-md py-4">
                             <div className="flex flex-col items-center space-y-4">
                                 {navItems.map(item => (
-                                    <a key={item.id} onClick={() => smoothScroll(item.id)} className="text-gray-100 hover:text-indigo-400 text-lg font-semibold transition-colors duration-300 cursor-pointer">
+                                    <a key={item.id} onClick={() => smoothScroll(item.id)} className="text-gray-100 text-lg font-semibold transition-colors duration-300 cursor-pointer">
                                         {item.name}
                                     </a>
                                 ))}
