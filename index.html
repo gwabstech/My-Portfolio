@@ -9,6 +9,13 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        window.firebase = { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, setLogLevel };
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
 
@@ -77,8 +84,13 @@
             const [modalTitle, setModalTitle] = useState('');
             const [showModal, setShowModal] = useState(false);
             const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+            const [db, setDb] = useState(null);
+            const [auth, setAuth] = useState(null);
+            const [reviews, setReviews] = useState([]);
+            const [newReview, setNewReview] = useState({ name: '', rating: 0, message: '' });
+            const [reviewStatus, setReviewStatus] = useState(null);
 
-            // Form state
+            // Form state for contact form
             const [formStatus, setFormStatus] = useState(null);
             const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
 
@@ -115,6 +127,97 @@
                     setTimeout(() => setFormStatus(null), 5000);
                 }
             };
+
+            // Firebase initialization and real-time review fetching
+            useEffect(() => {
+                const initFirebase = async () => {
+                    try {
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+                        if (!firebaseConfig || !firebaseConfig.projectId) {
+                            console.error("Firebase config is missing or invalid.");
+                            return;
+                        }
+
+                        const app = firebase.initializeApp(firebaseConfig);
+                        const firestoreDb = firebase.getFirestore(app);
+                        const authInstance = firebase.getAuth(app);
+                        setDb(firestoreDb);
+                        setAuth(authInstance);
+
+                        firebase.setLogLevel('Debug');
+
+                        if (initialAuthToken) {
+                            await firebase.signInWithCustomToken(authInstance, initialAuthToken);
+                        } else {
+                            await firebase.signInAnonymously(authInstance);
+                        }
+
+                        const reviewsPath = `/artifacts/${appId}/public/data/reviews`;
+                        const reviewsCollection = firebase.collection(firestoreDb, reviewsPath);
+                        const q = firebase.query(reviewsCollection, firebase.orderBy('timestamp', 'desc'));
+
+                        const unsubscribe = firebase.onSnapshot(q, (querySnapshot) => {
+                            const fetchedReviews = [];
+                            querySnapshot.forEach((doc) => {
+                                fetchedReviews.push({ id: doc.id, ...doc.data() });
+                            });
+                            setReviews(fetchedReviews);
+                        }, (error) => {
+                            console.error("Error listening to reviews:", error);
+                        });
+
+                        return () => unsubscribe();
+                    } catch (error) {
+                        console.error("Failed to initialize Firebase:", error);
+                    }
+                };
+
+                initFirebase();
+            }, []);
+
+            // Review form submission handler
+            const handleReviewSubmit = async (e) => {
+                e.preventDefault();
+                if (!newReview.name || !newReview.message || newReview.rating === 0) {
+                    setReviewStatus('error');
+                    return;
+                }
+
+                setReviewStatus('sending');
+                try {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    const reviewsCollection = firebase.collection(db, `/artifacts/${appId}/public/data/reviews`);
+                    await firebase.addDoc(reviewsCollection, {
+                        name: newReview.name,
+                        rating: newReview.rating,
+                        message: newReview.message,
+                        timestamp: firebase.serverTimestamp(),
+                    });
+                    setReviewStatus('success');
+                    setNewReview({ name: '', rating: 0, message: '' });
+                } catch (error) {
+                    console.error("Error adding review:", error);
+                    setReviewStatus('error');
+                } finally {
+                    setTimeout(() => setReviewStatus(null), 5000);
+                }
+            };
+
+            const renderStars = (rating) => {
+                const stars = [];
+                for (let i = 1; i <= 5; i++) {
+                    stars.push(
+                        <svg key={i} className={`h-5 w-5 ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+                        </svg>
+                    );
+                }
+                return stars;
+            };
+
 
             useEffect(() => {
                 const handleScroll = () => {
@@ -582,6 +685,83 @@
                 </div>
             );
 
+            const reviewsSection = () => (
+                <div className="max-w-2xl mx-auto">
+                    <div className="space-y-6 mb-12">
+                        {reviews.length > 0 ? (
+                            reviews.map(review => (
+                                <div key={review.id} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-indigo-500">
+                                    <div className="flex items-center mb-2">
+                                        <p className="font-bold text-lg text-gray-800 mr-2">{review.name}</p>
+                                        <div className="flex items-center space-x-1">
+                                            {renderStars(review.rating)}
+                                        </div>
+                                    </div>
+                                    <p className="text-gray-700 leading-relaxed italic">"{review.message}"</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-500">No reviews yet. Be the first to leave one!</p>
+                        )}
+                    </div>
+
+                    <form onSubmit={handleReviewSubmit} className="bg-white p-8 rounded-lg shadow-xl border-t-4 border-indigo-500">
+                        <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">Leave a Review</h3>
+                        <div className="mb-4">
+                            <label htmlFor="reviewName" className="block text-gray-700 font-bold mb-2">Your Name</label>
+                            <input
+                                type="text"
+                                id="reviewName"
+                                value={newReview.name}
+                                onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 font-bold mb-2">Rating</label>
+                            <div className="flex space-x-1">
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <svg
+                                        key={star}
+                                        onClick={() => setNewReview({ ...newReview, rating: star })}
+                                        className={`h-8 w-8 cursor-pointer ${star <= newReview.rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 transition-colors duration-200`}
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+                                    </svg>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="mb-6">
+                            <label htmlFor="reviewMessage" className="block text-gray-700 font-bold mb-2">Your Review</label>
+                            <textarea
+                                id="reviewMessage"
+                                value={newReview.message}
+                                onChange={(e) => setNewReview({ ...newReview, message: e.target.value })}
+                                rows="4"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                required
+                            ></textarea>
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+                            disabled={reviewStatus === 'sending'}
+                        >
+                            {reviewStatus === 'sending' ? 'Submitting...' : 'Submit Review'}
+                        </button>
+                        {reviewStatus === 'success' && (
+                            <p className="mt-4 text-center text-green-600 font-semibold">Review submitted successfully!</p>
+                        )}
+                        {reviewStatus === 'error' && (
+                            <p className="mt-4 text-center text-red-600 font-semibold">An error occurred. Please fill out all fields and try again.</p>
+                        )}
+                    </form>
+                </div>
+            );
+
             const contactSection = () => (
                 <div className="max-w-xl mx-auto">
                     <p className="text-gray-700 text-lg leading-relaxed text-center mb-8">
@@ -709,6 +889,7 @@
                         {renderSection('experience', 'Experience', experienceSection)}
                         {renderSection('services', 'My Services', servicesSection)}
                         {renderSection('projects', 'Projects', projectsSection)}
+                        {renderSection('reviews', 'Reviews & Recommendations', reviewsSection)}
                         {renderSection('contact', 'Hire Me / Contact', contactSection)}
                     </main>
                     <footer className="bg-gray-900 text-white py-10 text-center">
