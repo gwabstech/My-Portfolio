@@ -132,12 +132,19 @@
             useEffect(() => {
                 const initFirebase = async () => {
                     try {
-                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-                        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                        const firebaseConfig = {
+                            apiKey: "AIzaSyDkge5g5B0wNzC_U9qs5HCdadgBpl4ni7Y",
+                            authDomain: "my-portfolio-787cb.firebaseapp.com",
+                            projectId: "my-portfolio-787cb",
+                            storageBucket: "my-portfolio-787cb.firebasestorage.app",
+                            messagingSenderId: "204730955320",
+                            appId: "1:204730955320:web:aecc83bcb76b20a91c58cd"
+                        };
+                        const appId = 'my-portfolio-787cb'; // A unique ID for your app in Firestore
+                        const initialAuthToken = null; // No custom auth token needed for production
 
-                        if (!firebaseConfig || !firebaseConfig.projectId) {
-                            console.error("Firebase config is missing or invalid.");
+                        if (!firebaseConfig.projectId) {
+                            console.error("Firebase config is missing or invalid. Please ensure environment variables are set correctly.");
                             return;
                         }
 
@@ -188,7 +195,7 @@
 
                 setReviewStatus('sending');
                 try {
-                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    const appId = 'my-portfolio-787cb'; // Use the same unique ID here
                     const reviewsCollection = firebase.collection(db, `/artifacts/${appId}/public/data/reviews`);
                     await firebase.addDoc(reviewsCollection, {
                         name: newReview.name,
@@ -241,6 +248,7 @@
                 { name: 'Experience', id: 'experience' },
                 { name: 'Services', id: 'services' },
                 { name: 'Projects', id: 'projects' },
+                { name: 'Reviews', id: 'reviews' },
                 { name: 'Contact', id: 'contact' },
             ];
 
