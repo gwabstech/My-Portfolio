@@ -79,6 +79,17 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDkge5g5B0wNzC_U9qs5HCdadgBpl4ni7Y",
+            authDomain: "my-portfolio-787cb.firebaseapp.com",
+            projectId: "my-portfolio-787cb",
+            storageBucket: "my-portfolio-787cb.firebasestorage.app",
+            messagingSenderId: "204730955320",
+            appId: "1:204730955320:web:aecc83bcb76b20a91c58cd",
+            measurementId: "G-HQQNMK9CTD"
+        };
+
         const App = () => {
             const [isScrolled, setIsScrolled] = useState(false);
             const [isGenerating, setIsGenerating] = useState(false);
@@ -132,23 +143,7 @@
             useEffect(() => {
                 const initFirebase = async () => {
                     try {
-                        const firebaseConfig = {
-                            apiKey: "AIzaSyDkge5g5B0wNzC_U9qs5HCdadgBpl4ni7Y",
-                            authDomain: "my-portfolio-787cb.firebaseapp.com",
-                            projectId: "my-portfolio-787cb",
-                            storageBucket: "my-portfolio-787cb.firebasestorage.app",
-                            messagingSenderId: "204730955320",
-                            appId: "1:204730955320:web:aecc83bcb76b20a91c58cd",
-                            measurementId: "G-HQQNMK9CTD"
-                        };
-
                         const appId = firebaseConfig.projectId;
-
-                        if (!firebaseConfig.projectId) {
-                            console.error("Firebase config is missing or invalid. Please ensure environment variables are set correctly in Vercel.");
-                            setReviewStatus('error');
-                            return;
-                        }
 
                         const app = firebase.initializeApp(firebaseConfig);
                         const firestoreDb = firebase.getFirestore(app);
@@ -413,7 +408,7 @@
                         Fintech-focused Mobile App Developer, Payment Terminals(POS) & Solution Architect with a Distinction in Computer Science. I specialize in Kotlin, Java, Jetpack Compose, and Flutter, with hands-on experience delivering scalable POS and payment systems across Android and cross-platform stacks. My expertise includes integrating with major payment gateways and services such as <strong>NIBSS</strong>, <strong>Interswitch</strong>, <strong>Paystack</strong>, <strong>Flutterwave</strong>, and <strong>Monnify</strong>.
                     </p>
                     <p className="text-gray-700 text-lg leading-relaxed mt-4">
-                        Currently building secure financial transaction systems at Teasy Mobile International and BellBank MFB, including:
+                        Currently building secure financial transaction systems at Teasy Mobile International and Bellbank MFB, including:
                     </p>
                     <ul className="list-disc list-inside space-y-1 text-gray-600 mt-2">
                         <li>A Pay-with-Transfer API for merchant/terminal collections using dedicated virtual accounts.</li>
@@ -486,9 +481,9 @@
                             <li>Collaborated with cross-functional teams to ensure smooth implementation of new features.</li>
                         </ul>
                     </div>
-                    {/* BellBank MFB */}
+                    {/* Bellbank MFB */}
                     <div className="bg-gray-100 p-6 rounded-lg shadow-md animate-fade-in-up">
-                        <h3 className="text-xl font-bold text-gray-800">Android POS Engineer – BellBank MFB</h3>
+                        <h3 className="text-xl font-bold text-gray-800">Android POS Engineer – Bellbank MFB</h3>
                         <p className="text-gray-600 text-sm mt-1">Sep 2024 – Present | Kano State, Nigeria · Remote</p>
                         <p className="text-gray-700 mt-4">Development and optimization of Android-based POS systems for devices such as Topwise and Morefun. Responsibilities include designing and implementing secure payment applications, integrating banking APIs, troubleshooting hardware and software issues, and ensuring compliance with industry standards.</p>
                     </div>
