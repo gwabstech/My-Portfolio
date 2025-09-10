@@ -18,18 +18,6 @@
         // We'll define the window.firebase object for the React script to use.
         window.firebase = { initializeApp, getAuth, signInAnonymously, getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, setLogLevel };
 
-        // Placeholder for Vercel environment variables, which will be replaced during deployment.
-        // In the local environment, these will be undefined, so we use a safe fallback.
-        window.firebaseConfig = {
-            apiKey: 'NEXT_PUBLIC_FIREBASE_API_KEY',
-            authDomain: 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-            projectId: 'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-            storageBucket: 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
-            messagingSenderId: 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-            appId: 'NEXT_PUBLIC_FIREBASE_APP_ID',
-            measurementId: 'NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID'
-        };
-
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
@@ -147,21 +135,19 @@
             useEffect(() => {
                 const initFirebase = async () => {
                     try {
-                        // Read Firebase config from the script tag's global variable
-                        // Fallback to a placeholder if it's not defined
                         const firebaseConfig = {
-                            apiKey: 'AIzaSyDkge5g5B0wNzC_U9qs5HCdadgBpl4ni7Y',
-                            authDomain: 'my-portfolio-787cb.firebaseapp.com',
-                            projectId: 'my-portfolio-787cb',
-                            storageBucket: 'my-portfolio-787cb.firebasestorage.app',
-                            messagingSenderId: '204730955320',
-                            appId: '1:204730955320:web:aecc83bcb76b20a91c58cd',
-                            measurementId: 'G-HQQNMK9CTD',
+                            apiKey: "AIzaSyDkge5g5B0wNzC_U9qs5HCdadgBpl4ni7Y",
+                            authDomain: "my-portfolio-787cb.firebaseapp.com",
+                            projectId: "my-portfolio-787cb",
+                            storageBucket: "my-portfolio-787cb.firebasestorage.app",
+                            messagingSenderId: "204730955320",
+                            appId: "1:204730955320:web:aecc83bcb76b20a91c58cd",
+                            measurementId: "G-HQQNMK9CTD"
                         };
-                        const appId = 'my-portfolio-787cb'; // A unique ID for your app in Firestore
-                        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-                        if (!firebaseConfig.projectId || firebaseConfig.apiKey === 'NEXT_PUBLIC_FIREBASE_API_KEY') {
+                        const appId = firebaseConfig.projectId;
+
+                        if (!firebaseConfig.projectId) {
                             console.error("Firebase config is missing or invalid. Please ensure environment variables are set correctly in Vercel.");
                             setReviewStatus('error');
                             return;
@@ -175,11 +161,7 @@
 
                         firebase.setLogLevel('Debug');
 
-                        if (initialAuthToken) {
-                            await firebase.signInWithCustomToken(authInstance, initialAuthToken);
-                        } else {
-                            await firebase.signInAnonymously(authInstance);
-                        }
+                        await firebase.signInAnonymously(authInstance);
 
                         const reviewsPath = `/artifacts/${appId}/public/data/reviews`;
                         const reviewsCollection = firebase.collection(firestoreDb, reviewsPath);
@@ -214,16 +196,21 @@
 
                 setReviewStatus('sending');
                 try {
-                    const appId = 'my-portfolio-787cb';
-                    const reviewsCollection = firebase.collection(db, `/artifacts/${appId}/public/data/reviews`);
-                    await firebase.addDoc(reviewsCollection, {
-                        name: newReview.name,
-                        rating: newReview.rating,
-                        message: newReview.message,
-                        timestamp: firebase.serverTimestamp(),
-                    });
-                    setReviewStatus('success');
-                    setNewReview({ name: '', rating: 0, message: '' });
+                    const appId = 'my-portfolio-787cb'; // A unique ID for your app in Firestore
+                    if (db) {
+                        const reviewsCollection = firebase.collection(db, `/artifacts/${appId}/public/data/reviews`);
+                        await firebase.addDoc(reviewsCollection, {
+                            name: newReview.name,
+                            rating: newReview.rating,
+                            message: newReview.message,
+                            timestamp: firebase.serverTimestamp(),
+                        });
+                        setReviewStatus('success');
+                        setNewReview({ name: '', rating: 0, message: '' });
+                    } else {
+                        console.error("Firestore not initialized.");
+                        setReviewStatus('error');
+                    }
                 } catch (error) {
                     console.error("Error adding review:", error);
                     setReviewStatus('error');
@@ -476,7 +463,7 @@
                         <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Backend & APIs</h3>
                         <ul className="space-y-2 text-gray-700">
                             <li>• RESTful API with Spring Boot</li>
-                            <li>• NIBSS, Interswitch, Paystack, Flutterwave, Monnify, Unified Payment (UP), Zone, Grup Integrations</li>
+                            <li>• NIBSS, Interswitch, Paystack, Flutterwave, Moninify, Unified Payment (UP), Zone, Grup Integrations</li>
                         </ul>
                     </div>
                     <div>
@@ -739,6 +726,7 @@
                             <input
                                 type="text"
                                 id="reviewName"
+                                name="name"
                                 value={newReview.name}
                                 onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -765,6 +753,7 @@
                             <label htmlFor="reviewMessage" className="block text-gray-700 font-bold mb-2">Your Review</label>
                             <textarea
                                 id="reviewMessage"
+                                name="message"
                                 value={newReview.message}
                                 onChange={(e) => setNewReview({ ...newReview, message: e.target.value })}
                                 rows="4"
