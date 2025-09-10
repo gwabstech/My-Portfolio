@@ -15,7 +15,6 @@
         import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // We'll define the window.firebase object for the React script to use.
         window.firebase = { initializeApp, getAuth, signInAnonymously, getFirestore, collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, setLogLevel };
 
     </script>
@@ -93,7 +92,6 @@
             const [newReview, setNewReview] = useState({ name: '', rating: 0, message: '' });
             const [reviewStatus, setReviewStatus] = useState(null);
 
-            // Form state for contact form
             const [formStatus, setFormStatus] = useState(null);
             const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
 
@@ -131,7 +129,6 @@
                 }
             };
 
-            // Firebase initialization and real-time review fetching
             useEffect(() => {
                 const initFirebase = async () => {
                     try {
@@ -186,7 +183,6 @@
                 initFirebase();
             }, []);
 
-            // Review form submission handler
             const handleReviewSubmit = async (e) => {
                 e.preventDefault();
                 if (!newReview.name || !newReview.message || newReview.rating === 0) {
@@ -196,7 +192,7 @@
 
                 setReviewStatus('sending');
                 try {
-                    const appId = 'my-portfolio-787cb'; // A unique ID for your app in Firestore
+                    const appId = 'my-portfolio-787cb';
                     if (db) {
                         const reviewsCollection = firebase.collection(db, `/artifacts/${appId}/public/data/reviews`);
                         await firebase.addDoc(reviewsCollection, {
@@ -223,14 +219,13 @@
                 const stars = [];
                 for (let i = 1; i <= 5; i++) {
                     stars.push(
-                        <svg key={i} className={`h-5 w-5 ${i <= rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <svg key={i} onClick={() => setNewReview({ ...newReview, rating: i })} className={`h-8 w-8 cursor-pointer ${i <= newReview.rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 transition-colors duration-200`} fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
                         </svg>
                     );
                 }
                 return stars;
             };
-
 
             useEffect(() => {
                 const handleScroll = () => {
@@ -463,7 +458,7 @@
                         <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Backend & APIs</h3>
                         <ul className="space-y-2 text-gray-700">
                             <li>• RESTful API with Spring Boot</li>
-                            <li>• NIBSS, Interswitch, Paystack, Flutterwave, Moninify, Unified Payment (UP), Zone, Grup Integrations</li>
+                            <li>• NIBSS, Interswitch, Paystack, Flutterwave, Monnify, Unified Payment (UP), Zone, Grup Integrations</li>
                         </ul>
                     </div>
                     <div>
@@ -708,7 +703,16 @@
                                     <div className="flex items-center mb-2">
                                         <p className="font-bold text-lg text-gray-800 mr-2">{review.name}</p>
                                         <div className="flex items-center space-x-1">
-                                            {renderStars(review.rating)}
+                                            {[...Array(review.rating)].map((_, i) => (
+                                                <svg key={i} className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+                                                </svg>
+                                            ))}
+                                            {[...Array(5 - review.rating)].map((_, i) => (
+                                                <svg key={i + review.rating} className="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+                                                </svg>
+                                            ))}
                                         </div>
                                     </div>
                                     <p className="text-gray-700 leading-relaxed italic">"{review.message}"</p>
