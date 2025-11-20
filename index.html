@@ -440,7 +440,7 @@
             src="https://i.imgur.com/jlnDzFR.jpeg"
             alt="Abubakar Gwabare Profile"
             className="rounded-full w-48 h-48 object-cover border-4 border-indigo-400 shadow-xl mb-6"
-            onerror="this.onerror=null;this.src='https://placehold.co/150x150/5B64B1/FFFFFF?text=AG';"
+            onError={(e) => {e.target.onerror=null; e.target.src='https://placehold.co/150x150/5B64B1/FFFFFF?text=AG';}}
           />
           <h1 className="text-4xl md:text-5xl font-extrabold text-white">
             Hi, I’m Abubakar Abdullahi Gwabare 👋
@@ -531,6 +531,18 @@
 
       const experienceSection = () => (
         <div className="max-w-4xl mx-auto space-y-12 text-gray-300">
+          {/* Regent MFB */}
+          <div className="card-project p-6 rounded-lg shadow-md hover-effect">
+            <h3 className="text-xl font-bold text-gray-100">Software Developer – Regent MFB</h3>
+            <p className="text-gray-400 text-sm mt-1">[Date Range] | [Location] · [Type]</p>
+            <p className="mt-4">[Description of your role and achievements at Regent MFB]</p>
+          </div>
+          {/* Etop */}
+          <div className="card-project p-6 rounded-lg shadow-md hover-effect">
+            <h3 className="text-xl font-bold text-gray-100">Software Developer – Etop</h3>
+            <p className="text-gray-400 text-sm mt-1">[Date Range] | [Location] · [Type]</p>
+            <p className="mt-4">[Description of your role and achievements at Etop]</p>
+          </div>
           {/* Teasy Mobile International */}
           <div className="card-project p-6 rounded-lg shadow-md hover-effect">
             <h3 className="text-xl font-bold text-gray-100">Android POS Developer – Teasy Mobile International</h3>
@@ -769,7 +781,7 @@
           {/* Project Card: Viscount MFB Website */}
           <div className="card-project p-6 rounded-lg shadow-xl hover-effect">
             <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
-              <iframe src="https://www.viscountmfb.com/" frameborder="0" class="w-full h-full"></iframe>
+              <iframe src="https://www.viscountmfb.com/" frameBorder="0" className="w-full h-full"></iframe>
             </div>
             <h3 className="text-2xl font-bold text-gray-100 mt-4">Viscount MFB Website</h3>
             <p className="text-gray-400 mt-2">A website with account opening functionality, built for Viscount Microfinance Bank.</p>
@@ -780,7 +792,7 @@
           {/* New Project Card: Gumelite */}
           <div className="card-project p-6 rounded-lg shadow-xl hover-effect">
             <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
-              <iframe src="https://www.gumelite.com/" frameborder="0" class="w-full h-full"></iframe>
+              <iframe src="https://www.gumelite.com/" frameBorder="0" className="w-full h-full"></iframe>
             </div>
             <h3 className="text-2xl font-bold text-gray-100 mt-4">Gumelite</h3>
             <p className="text-gray-400 mt-2">A freelance marketing site.</p>
@@ -964,13 +976,13 @@
             </div>
             <div className="flex flex-col items-center mt-6 space-y-2">
               <a href="mailto:gwabstech@gmail.com" className="text-gray-400 hover:text-indigo-400 transition-colors duration-300 hover-glow">
-                <span class="font-bold">Email:</span> gwabstech@gmail.com
+                <span className="font-bold">Email:</span> gwabstech@gmail.com
               </a>
               <p className="text-gray-400">
-                <span class="font-bold">Phone 1:</span> +234 701 811 6333
+                <span className="font-bold">Phone 1:</span> +234 701 811 6333
               </p>
               <p className="text-gray-400">
-                <span class="font-bold">Phone 2:</span> +234 903 086 3146
+                <span className="font-bold">Phone 2:</span> +234 903 086 3146
               </p>
             </div>
           </div>
