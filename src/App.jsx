@@ -535,6 +535,7 @@ function App() {
 
   const projectsSection = () => (
     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Project Card: Gwabs Payment System (GPS) */}
       <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
         <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
           <img src="/images/gps_project.png" alt="Gwabs Payment System" className="w-full h-full object-cover" />
@@ -553,6 +554,7 @@ function App() {
         </div>
       </div>
 
+      {/* Project Card: CBA Ride */}
       <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
         <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
           <img src="/images/cba_ride.png" alt="CBA Ride" className="w-full h-full object-cover" />
@@ -566,6 +568,7 @@ function App() {
         </div>
       </div>
 
+      {/* Project Card: Paywizzard */}
       <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
         <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
           <img src="/images/paywizzard.png" alt="Paywizzard" className="w-full h-full object-cover" />
@@ -576,6 +579,195 @@ function App() {
           <button onClick={() => handleReadMore('Paywizzard', 'Paywizzard is a comprehensive bills payment application that allows users to purchase airtime and data for all networks, as well as pay for utilities and cable TV subscriptions like DSTV, GOTV, and PHCN. Built with Jetpack Compose.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
             Read More
           </button>
+        </div>
+      </div>
+
+      {/* Project Card: Lammapai */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/lammapai.png" alt="Lammapai" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Lammapai</h3>
+          <p className="text-gray-400 mt-2">Airtime to cash and internet selling app, allowing seamless conversion of airtime to funds.</p>
+          <button onClick={() => handleReadMore('Lammapai', 'Lammapai is a fintech utility app designed to facilitate airtime-to-cash conversions and internet data bundle sales. It integrates with external payment gateways to provide a smooth and secure user experience.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: ProctorMe */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/proctorme.png" alt="ProctorMe" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">ProctorMe</h3>
+          <p className="text-gray-400 mt-2">Android application for remote exam proctoring.</p>
+          <button onClick={() => handleReadMore('ProctorMe', 'ProctorMe is an Android application designed for secure remote exam monitoring and proctoring. It features real-time monitoring capabilities to ensure exam integrity.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Bellbank POS */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden">
+          <iframe
+            src="https://www.youtube.com/embed/QvxVA2UpS9w"
+            title="Bellbank POS Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Bellbank POS</h3>
+          <p className="text-gray-400 mt-2">An Android-based agency banking and merchant collection system.</p>
+          <button onClick={() => handleReadMore('Bellbank POS', 'An Android-based agency banking and merchant collection system with a focus on card, NFC, and ISO standards.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Quickfill */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden">
+          <iframe
+            src="https://www.youtube.com/embed/bQxjgJkdkCI"
+            title="Quickfill Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Quickfill</h3>
+          <p className="text-gray-400 mt-2">A fueling station attendant app to track sales and accept multi-channel payments (card, NFC, transfer) on Morefun MF960 and Topwise MP35P Android POS devices.</p>
+          <button onClick={() => handleReadMore('Quickfill', 'A fueling station attendant app to help track sales and accept multi-channel payments (card, NFC, transfer) on Morefun MF960 and Topwise MP35P Android POS devices.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Teasy POS */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden">
+          <iframe
+            src="https://www.youtube.com/embed/kr6Vklr_AYE"
+            title="Teasy POS Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Teasy POS App</h3>
+          <p className="text-gray-400 mt-2">A payment collection application for financial services.</p>
+          <button onClick={() => handleReadMore('Teasy POS App', 'A payment collection application for financial services, with a focus on seamless transactions and user experience.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: SM Fabrics POS */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/sm_fabrics_pos.png" alt="SM Fabrics POS" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">SM Fabrics POS</h3>
+          <p className="text-gray-400 mt-2">Specialized Point-of-Sale (POS) application for Nigerian textile wholesalers, featuring precision inventory and a dynamic pricing engine.</p>
+          <button onClick={() => handleReadMore('SM Fabrics POS', 'SM Fabrics POS is a specialized Point-of-Sale application developed to address the critical challenges of inventory leakage, inaccurate sales tracking, and compliance faced by Nigerian fabric and textile wholesalers. The system transforms manual, paper-based operations into a modern, single-store digital solution, directly targeting the need for precision in measuring and selling goods by variable unit (e.g., fractional yardage). Built using Kotlin (Ktor Server, Exposed DSL), H2, and a responsive JavaScript/Tailwind CSS frontend.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Virtual Account System */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/virtual_account_system.png" alt="Virtual Account System" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Virtual Account System</h3>
+          <p className="text-gray-400 mt-2">A system for collections via virtual accounts and transfer, ensuring secure and seamless transactions.</p>
+          <button onClick={() => handleReadMore('Virtual Account System', 'A system for collections via virtual accounts and transfer, ensuring secure and seamless transactions.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Ktor Notification Service */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/ktor_service.png" alt="Ktor Notification Service" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Ktor Notification Service</h3>
+          <p className="text-gray-400 mt-2">A real-time WebSocket service developed with Kotlin and Ktor for push notifications and broadcasts to Android POS devices.</p>
+          <button onClick={() => handleReadMore('Ktor Notification Service', 'A real-time WebSocket service developed with Kotlin and Ktor for push notifications and broadcasts to Android POS devices.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Bellbank Cashout Service */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/bellbank_cashout.png" alt="Bellbank Cashout Service" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Bellbank Cashout Service</h3>
+          <p className="text-gray-400 mt-2">A high-performance middleware service that routes and tracks transactions to multiple processors, handling business logic on the POS.</p>
+          <button onClick={() => handleReadMore('Bellbank Cashout Service', 'A high-performance middleware service that routes and tracks transactions to multiple processors, handling business logic on the POS.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Kaduna Electric Vending Application */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/kaduna_vending.png" alt="Kaduna Electric Vending Application" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Kaduna Electric Vending Application</h3>
+          <p className="text-gray-400 mt-2">An agent-facing app on an MP35P Topwise POS for vending electricity tokens, integrated with multiple payment channels.</p>
+          <button onClick={() => handleReadMore('Kaduna Electric Vending Application', 'An agent-facing application running on the MP35P Topwise POS device. It integrates with Teasy Virtual Account, NIBSS, and Interswitch for multi-channel card processing, allowing agents to vend electricity tokens to customers.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      {/* Project Card: Viscount MFB Website */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <iframe src="https://www.viscountmfb.com/" frameBorder="0" className="w-full h-full" title="Viscount MFB Website"></iframe>
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Viscount MFB Website</h3>
+          <p className="text-gray-400 mt-2">A website with account opening functionality, built for Viscount Microfinance Bank.</p>
+          <a href="https://www.viscountmfb.com/" target="_blank" rel="noopener noreferrer" className="mt-4 w-full text-center block btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            View Site
+          </a>
+        </div>
+      </div>
+
+      {/* Project Card: Gumelite */}
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <iframe src="https://www.gumelite.com/" frameBorder="0" className="w-full h-full" title="Gumelite Website"></iframe>
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Gumelite</h3>
+          <p className="text-gray-400 mt-2">A freelance marketing site.</p>
+          <a href="https://www.gumelite.com/" target="_blank" rel="noopener noreferrer" className="mt-4 w-full text-center block btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            View Site
+          </a>
         </div>
       </div>
     </div>
