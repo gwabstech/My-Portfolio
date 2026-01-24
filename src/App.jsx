@@ -327,7 +327,7 @@ function App() {
   const aboutSection = () => (
     <div className="max-w-4xl mx-auto text-center md:text-left text-gray-300">
       <p className="text-lg leading-relaxed">
-        Fintech-focused Mobile App Developer, Payment Terminals(POS) & Solution Architect with a Distinction in Computer Science. I specialize in Kotlin, Java, Jetpack Compose, and Flutter, with hands-on experience delivering scalable POS and payment systems across Android and cross-platform stacks. My expertise includes integrating with major payment gateways and services such as <strong>NIBSS</strong>, <strong>Interswitch</strong>, <strong>Paystack</strong>, <strong>Flutterwave</strong>, and <strong>Monnify</strong>.
+        Fintech-focused Mobile App Developer, Payment Terminals(POS) & Solution Architect with a Distinction in Computer Science. I specialize in Kotlin, Java, Jetpack Compose, and Flutter, with hands-on experience delivering scalable POS and payment systems across Android and cross-platform stacks. My expertise includes integrating with major payment gateways and services such as <strong>NIBSS</strong>, <strong>Interswitch</strong>, <strong>Paystack</strong>, <strong>Flutterwave</strong>, <strong>Monnify</strong>, <strong>Unified Payment (UP)</strong>, <strong>Zone</strong>, and <strong>Grup</strong>.
       </p>
       <p className="text-lg leading-relaxed mt-4">
         Currently building secure financial transaction systems at Teasy Mobile International and Bellbank MFB, including:
