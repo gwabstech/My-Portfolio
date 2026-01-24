@@ -1,0 +1,825 @@
+import { useState, useEffect } from 'react'
+import { initializeApp } from 'firebase/app'
+import { getAuth, signInAnonymously } from 'firebase/auth'
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  limit
+} from 'firebase/firestore'
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDkge5g5B0wNzC_U9qs5HCdadgBpl4ni7Y",
+  authDomain: "my-portfolio-787cb.firebaseapp.com",
+  projectId: "my-portfolio-787cb",
+  storageBucket: "my-portfolio-787cb.firebasestorage.app",
+  messagingSenderId: "204730955320",
+  appId: "1:204730955320:web:aecc83bcb76b20a91c58cd",
+  measurementId: "G-HQQNMK9CTD"
+}
+
+// Initialize Firebase
+let firebaseApp, firestoreDb, firebaseAuth
+try {
+  firebaseApp = initializeApp(firebaseConfig)
+  firestoreDb = getFirestore(firebaseApp)
+  firebaseAuth = getAuth(firebaseApp)
+} catch (error) {
+  console.error("Failed to initialize Firebase:", error)
+}
+
+function App() {
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatedContent, setGeneratedContent] = useState('')
+  const [modalTitle, setModalTitle] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [reviews, setReviews] = useState([])
+  const [newReview, setNewReview] = useState({ name: '', rating: 0, message: '' })
+  const [reviewStatus, setReviewStatus] = useState(null)
+  const [formStatus, setFormStatus] = useState(null)
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prevState => ({ ...prevState, [name]: value }))
+  }
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    setFormStatus('sending')
+    const form = e.target
+    const data = new FormData(form)
+
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+
+      if (response.ok) {
+        setFormStatus('success')
+        setFormData({ name: '', email: '', subject: '', message: '' })
+      } else {
+        setFormStatus('error')
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setFormStatus('error')
+    } finally {
+      setTimeout(() => setFormStatus(null), 5000)
+    }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    if (!firestoreDb || !firebaseAuth) return
+
+    const initAuthAndReviews = async () => {
+      try {
+        await signInAnonymously(firebaseAuth)
+        const appId = firebaseConfig.projectId
+        const reviewsPath = `/artifacts/${appId}/public/data/reviews`
+        const reviewsCollection = collection(firestoreDb, reviewsPath)
+        const q = query(reviewsCollection, orderBy('timestamp', 'desc'), limit(6))
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const fetchedReviews = []
+          querySnapshot.forEach((doc) => {
+            fetchedReviews.push({ id: doc.id, ...doc.data() })
+          })
+          setReviews(fetchedReviews)
+        }, (error) => {
+          console.error("Error listening to reviews:", error)
+        })
+
+        return () => unsubscribe()
+      } catch (error) {
+        console.error("Failed to initialize Firebase authentication or reviews listener:", error)
+      }
+    }
+
+    initAuthAndReviews()
+  }, [])
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault()
+    if (!newReview.name || !newReview.message || newReview.rating === 0) {
+      setReviewStatus('error')
+      return
+    }
+
+    setReviewStatus('sending')
+    try {
+      const appId = firebaseConfig.projectId
+      if (firestoreDb) {
+        const reviewsCollection = collection(firestoreDb, `/artifacts/${appId}/public/data/reviews`)
+        await addDoc(reviewsCollection, {
+          name: newReview.name,
+          rating: newReview.rating,
+          message: newReview.message,
+          timestamp: serverTimestamp(),
+        })
+        setReviewStatus('success')
+        setNewReview({ name: '', rating: 0, message: '' })
+      } else {
+        console.error("Firestore not initialized.")
+        setReviewStatus('error')
+      }
+    } catch (error) {
+      console.error("Error adding review:", error)
+      setReviewStatus('error')
+    } finally {
+      setTimeout(() => setReviewStatus(null), 5000)
+    }
+  }
+
+  const smoothScroll = (id) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+      setIsMobileMenuOpen(false)
+    }
+  }
+
+  const navItems = [
+    { name: 'About', id: 'about' },
+    { name: 'Skills', id: 'skills' },
+    { name: 'Experience', id: 'experience' },
+    { name: 'Services', id: 'services' },
+    { name: 'Projects', id: 'projects' },
+    { name: 'Reviews', id: 'reviews' },
+    { name: 'Contact', id: 'contact' },
+  ]
+
+  const cleanMarkdown = (text) => {
+    let cleanText = text.replace(/### (.*)/g, '<h4>$1</h4>')
+    cleanText = cleanText.replace(/## (.*)/g, '<h3>$1</h3>')
+    cleanText = cleanText.replace(/\*\*\*(.*?)\*\*\*/g, '<strong>$1</strong>')
+    cleanText = cleanText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    cleanText = cleanText.replace(/\*(.*?)\*/g, '<em>$1</em>')
+    cleanText = cleanText.replace(/^- (.*)/gm, '<li>$1</li>')
+    if (cleanText.includes('<li>')) {
+      cleanText = `<ul>${cleanText}</ul>`
+    }
+    return cleanText
+  }
+
+  const generateAIContent = async (systemPrompt, userQuery) => {
+    const apiKey = ""
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`
+
+    const payload = {
+      contents: [{ parts: [{ text: userQuery }] }],
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+    }
+
+    const maxRetries = 3
+    let retryCount = 0
+
+    while (retryCount < maxRetries) {
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+
+        if (!response.ok) {
+          throw new Error(`API call failed with status: ${response.status}`)
+        }
+
+        const result = await response.json()
+        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text
+
+        if (text) {
+          return text
+        } else {
+          return 'Failed to generate content.'
+        }
+      } catch (error) {
+        console.error('Error generating content:', error)
+        retryCount++
+        if (retryCount < maxRetries) {
+          const delay = Math.pow(2, retryCount) * 1000
+          console.log(`Retrying in ${delay / 1000} seconds...`)
+          await new Promise(res => setTimeout(res, delay))
+        } else {
+          return 'An error occurred. Please try again later.'
+        }
+      }
+    }
+  }
+
+  const handleReadMore = async (projectName, projectSummary) => {
+    setIsGenerating(true)
+    setGeneratedContent('Loading content...')
+    setModalTitle(`Details for ${projectName}`)
+    setShowModal(true)
+
+    const cacheKey = `blogPost_${projectName}`
+    const cachedContent = localStorage.getItem(cacheKey)
+
+    if (cachedContent) {
+      setGeneratedContent(cachedContent)
+      setIsGenerating(false)
+      return
+    }
+
+    const systemPrompt = `You are a professional blog post writer and a fintech expert. Write a compelling blog post about the specified project, focusing on its technical aspects, features, and business impact. The post should be a maximum of 300 words. Place strong emphasis on technologies related to card payments, NFC, and ISO standards (like ISO 8583). Structure the post with a captivating title, a brief introduction, and a body that explains the key features and their importance. Format the output with clear headings and paragraphs.`
+    const userQuery = `Project Name: ${projectName}\nProject Description: ${projectSummary}\n\nWrite a blog post about this project.`
+
+    const content = await generateAIContent(systemPrompt, userQuery)
+    const cleanedContent = cleanMarkdown(content)
+    localStorage.setItem(cacheKey, cleanedContent)
+    setGeneratedContent(cleanedContent)
+    setIsGenerating(false)
+  }
+
+  const renderNav = () => (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glass-nav shadow-lg' : 'bg-transparent'}`}>
+      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">Abubakar</h1>
+        <div className="hidden md:flex space-x-8">
+          {navItems.map(item => (
+            <a key={item.id} onClick={() => smoothScroll(item.id)} className="text-gray-400 header-link hover:text-indigo-400 transition-colors font-medium cursor-pointer">
+              {item.name}
+            </a>
+          ))}
+        </div>
+        <div className="md:hidden">
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-gray-400 focus:outline-none">
+            <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      {isMobileMenuOpen && (
+        <div className="md:hidden glass-nav py-4 border-t border-gray-800">
+          <div className="flex flex-col items-center space-y-4">
+            {navItems.map(item => (
+              <a key={item.id} onClick={() => smoothScroll(item.id)} className="text-gray-300 text-lg font-medium hover:text-indigo-400 transition-colors duration-300 cursor-pointer">
+                {item.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </nav>
+  )
+
+  const renderSection = (id, title, content) => (
+    <section id={id} className="py-24 relative">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-white section-title">{title}</h2>
+        </div>
+        {content()}
+      </div>
+    </section>
+  )
+
+  const heroSection = () => (
+    <div id="hero" className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden text-center p-6 pt-24">
+      <div className="bg-animation"></div>
+      <img
+        src="https://i.imgur.com/jlnDzFR.jpeg"
+        alt="Abubakar Gwabare Profile"
+        className="rounded-full w-48 h-48 object-cover border-4 border-indigo-500/30 profile-glow mb-8"
+        onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/150x150/5B64B1/FFFFFF?text=AG' }}
+      />
+      <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6">
+        Hi, I'm <span className="text-gradient">Abubakar Abdullahi Gwabare</span>
+      </h1>
+      <p className="max-w-2xl mx-auto text-xl md:text-2xl text-gray-300 leading-relaxed mb-8">
+        Mobile App Developer & Fintech Architect | Secure POS & Payment Systems | Kotlin | Card Payments, NFC & EMV Solutions
+      </p>
+      <p className="text-lg text-gray-400 mb-10 max-w-xl mx-auto">
+        I design and build scalable, secure, and user-friendly mobile applications that empower businesses and enhance everyday life.
+      </p>
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+        <a onClick={() => smoothScroll('contact')} className="btn-gradient text-white font-bold py-4 px-10 rounded-full shadow-xl transition-transform transform hover:scale-105 cursor-pointer text-lg">
+          Hire Me
+        </a>
+        <a onClick={() => smoothScroll('projects')} className="btn-outline text-indigo-300 font-bold py-4 px-10 rounded-full shadow-lg transition-transform transform hover:scale-105 cursor-pointer text-lg">
+          View My Work
+        </a>
+      </div>
+    </div>
+  )
+
+  const aboutSection = () => (
+    <div className="max-w-4xl mx-auto text-center md:text-left text-gray-300">
+      <p className="text-lg leading-relaxed">
+        Fintech-focused Mobile App Developer, Payment Terminals(POS) & Solution Architect with a Distinction in Computer Science. I specialize in Kotlin, Java, Jetpack Compose, and Flutter, with hands-on experience delivering scalable POS and payment systems across Android and cross-platform stacks. My expertise includes integrating with major payment gateways and services such as <strong>NIBSS</strong>, <strong>Interswitch</strong>, <strong>Paystack</strong>, <strong>Flutterwave</strong>, and <strong>Monnify</strong>.
+      </p>
+      <p className="text-lg leading-relaxed mt-4">
+        Currently building secure financial transaction systems at Teasy Mobile International and Bellbank MFB, including:
+      </p>
+      <ul className="list-disc list-inside space-y-1 text-gray-400 mt-2">
+        <li>A Pay-with-Transfer API for merchant/terminal collections using dedicated virtual accounts.</li>
+        <li>A Card Collection System for EMV POS transactions, designed for partner scalability.</li>
+      </ul>
+      <p className="text-lg leading-relaxed mt-4">
+        Former Head of IT, with a strong record of shipping modern apps, dashboards, and backend services. Passionate about solving complex problems with clean architecture, compliance, and speed. I hold PCI DSS certifications for 2019, 2023, and 2024, reinforcing my expertise in securing financial transactions and ensuring compliance with global payment security standards.
+      </p>
+    </div>
+  )
+
+  const skillsSection = () => (
+    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-gray-300">
+      <div>
+        <h3 className="text-2xl font-semibold text-indigo-400 mb-4">Languages & Frameworks</h3>
+        <ul className="space-y-2 text-gray-300">
+          <li>Kotlin, Java, Dart (Flutter)</li>
+          <li>Jetpack Compose, XML UI</li>
+          <li>Compose Multiplatform</li>
+          <li>KOTLIN ktor</li>
+          <li>Spring Boot</li>
+        </ul>
+      </div>
+      <div>
+        <h3 className="text-2xl font-semibold text-indigo-400 mb-4">Mobile & Financial Development</h3>
+        <ul className="space-y-2 text-gray-300">
+          <li>Android SDK, Firebase, Retrofit, Coroutines, LiveData, Flow</li>
+          <li>POS Device SDKs (YSDK, MP35, MF960, Smart POS Integrations)</li>
+          <li>EMV, NFC & Card Payments</li>
+          <li>ISO 8583 & ISO 20022</li>
+        </ul>
+      </div>
+      <div>
+        <h3 className="text-2xl font-semibold text-indigo-400 mb-4">Backend & APIs</h3>
+        <ul className="space-y-2 text-gray-300">
+          <li>RESTful API with Spring Boot</li>
+          <li>NIBSS, Interswitch, Paystack, Flutterwave, Monnify, Unified Payment (UP), Zone, Grup Integrations</li>
+        </ul>
+      </div>
+      <div>
+        <h3 className="text-2xl font-semibold text-indigo-400 mb-4">Other Skills</h3>
+        <ul className="space-y-2 text-gray-300">
+          <li>Core Banking System Development</li>
+          <li>Cybersecurity & Fraud Prevention</li>
+          <li>Mobile & Web App Development</li>
+          <li>Cloud & On-Premise Infrastructure</li>
+          <li>Git & GitHub</li>
+        </ul>
+      </div>
+    </div>
+  )
+
+  const experienceSection = () => (
+    <div className="max-w-4xl mx-auto space-y-12 text-gray-300">
+      <div className="glass-card p-8 rounded-2xl hover-effect relative overflow-hidden group">
+        <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">Android Engineer POS – Getpayed Technology Solutions Ltd</h3>
+        <p className="text-gray-400 text-sm mt-1">Jan 2026 – Present | Nigeria · Remote</p>
+        <p className="mt-4 text-gray-300">Payment collection and Agency Banking solutions.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect relative overflow-hidden group">
+        <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">Software Developer (Open Banking & Agile Governance) – Teasy Mobile International</h3>
+        <p className="text-gray-400 text-sm mt-1">Jan 2026 – Present | Maitama · On-site</p>
+        <p className="mt-4 text-gray-300">Leading efforts to build secure, CBN-compliant Open Banking APIs and strengthening Agile Governance frameworks to support safe innovation in the payment space.</p>
+        <div className="mt-4 border-t border-gray-700/50 pt-4">
+          <h4 className="text-lg font-bold text-indigo-400">Team Lead R&D: Android POS Developer</h4>
+          <p className="text-gray-400 text-sm mt-1">Mar 2025 – Present</p>
+          <ul className="list-disc list-inside text-gray-400 mt-2 space-y-2">
+            <li>Developing payment terminal applications for agency banking, business collections, and wallet integration.</li>
+            <li>Integrated 3rd-party gateways and card processors for seamless transactions.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Software Developer – Etop Nigeria</h3>
+        <p className="text-gray-400 text-sm mt-1">Oct 2025 – Jan 2026 | Abuja, Nigeria · Hybrid</p>
+        <p className="mt-4">Agency Banking and merchant collection Smart POS Device development.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Head of Information Technology Department – Viscount MFB</h3>
+        <p className="text-gray-400 text-sm mt-1">Sep 2024 – May 2025 | Abuja, Nigeria · Remote</p>
+        <ul className="list-disc list-inside text-gray-400 mt-4 space-y-2">
+          <li>Led the development of a brand-new Core Banking Application (CBA).</li>
+          <li>Integrated NIBSS & Interswitch for interbank transfers and card services.</li>
+          <li>Spearheaded Leadmonie, a digital financial solution for seamless transactions.</li>
+        </ul>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android POS Engineer – BellBank MFB</h3>
+        <p className="text-gray-400 text-sm mt-1">Sep 2024 – Present | Kano State, Nigeria · Remote</p>
+        <p className="mt-4">Development and optimization of Android-based POS systems (Topwise, Morefun). Responsibilities include designing secure payment applications and ensuring compliance with industry standards.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android Developer – Tech Nutix</h3>
+        <p className="text-gray-400 text-sm mt-1">Sep 2024 – Nov 2024 | Abuja, Nigeria · Remote</p>
+        <p className="mt-4">Mobile application development and mobile product development.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android Developer – BINFO GROUP</h3>
+        <p className="text-gray-400 text-sm mt-1">Oct 2021 – Jun 2024 | London, UK · Remote</p>
+        <p className="mt-4">Developed E-commerce applications such as groceries store and food delivery systems (Food Grubber).</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android Developer – Paywizzard</h3>
+        <p className="text-gray-400 text-sm mt-1">Jan 2024 – Apr 2024 | Kaduna, Nigeria · Hybrid</p>
+        <p className="mt-4">Worked on Bills payment App using Jetpack Compose. Development of airtime and data purchase features for all networks.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Instructor – MastermindTech</h3>
+        <p className="text-gray-400 text-sm mt-1">Sep 2023 – Oct 2023 | Kaduna, Nigeria · On-site</p>
+        <p className="mt-4">Android Development Instructor.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Mobile Application Developer – Adbech Technology Nigeria limited</h3>
+        <p className="text-gray-400 text-sm mt-1">Feb 2023 – Oct 2023 | Kaduna, Nigeria · On-site</p>
+        <p className="mt-4">Developed CBA RIDE, a tricycle booking system similar to Uber/Bolt.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android Developer – ProctorMe</h3>
+        <p className="text-gray-400 text-sm mt-1">May 2023 – Jun 2023 | Nigeria · Remote</p>
+        <p className="mt-4">Worked on the ProctorMe Android Application for exam proctoring.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Software Developer (Intern) – Right Click IT Solutions</h3>
+        <p className="text-gray-400 text-sm mt-1">Mar 2023 – Apr 2023 | Abuja, Nigeria · Remote</p>
+        <p className="mt-4">Python, JavaScript, and Java development.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android Developer – LAMMAPAI NIG</h3>
+        <p className="text-gray-400 text-sm mt-1">Feb 2022 – Dec 2022 | Zamfara State, Nigeria · Remote</p>
+        <p className="mt-4">Developed and maintained airtime swap to cash and internet selling app.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Computer Science Teacher – Dariq International School</h3>
+        <p className="text-gray-400 text-sm mt-1">Oct 2021 – May 2023 | Kaduna, Nigeria · On-site</p>
+        <p className="mt-4">Taught computer science, developed lesson plans, and mentored students in technology.</p>
+      </div>
+
+      <div className="glass-card p-8 rounded-2xl hover-effect transform transition-all hover:scale-[1.01]">
+        <h3 className="text-xl font-bold text-gray-100">Android Application Developer – Alekwe</h3>
+        <p className="text-gray-400 text-sm mt-1">Jun 2019 – Jun 2021 | Kaduna, Nigeria · On-site</p>
+        <p className="mt-4">Responsible for developing and maintaining the company's Android applications using Java and Kotlin.</p>
+      </div>
+    </div>
+  )
+
+  const servicesSection = () => (
+    <div className="max-w-4xl mx-auto text-center text-gray-300">
+      <p className="text-lg leading-relaxed mb-8">
+        I'm currently available for a variety of roles to fit your needs, including freelance projects, consultancy, and training. I'm passionate about building impactful mobile applications, whether for a one-off project or a long-term role.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="glass-card p-8 rounded-2xl hover-effect text-center group transition-all duration-300 hover:-translate-y-2">
+          <div className="w-16 h-16 mx-auto bg-indigo-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-indigo-500/20 transition-colors">
+            <svg className="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">Freelance Projects</h3>
+          <p className="text-gray-400 text-sm">Bring your ideas to life on a project basis. Perfect for startups.</p>
+          <p className="mt-4 font-bold text-indigo-400">Pricing upon request</p>
+        </div>
+        <div className="glass-card p-8 rounded-2xl hover-effect text-center group transition-all duration-300 hover:-translate-y-2">
+          <div className="w-16 h-16 mx-auto bg-green-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
+            <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">Full-time Roles</h3>
+          <p className="text-gray-400 text-sm">Seeking a long-term position to join a dynamic team.</p>
+          <p className="mt-4 font-bold text-green-400">Let's discuss salary</p>
+        </div>
+        <div className="glass-card p-8 rounded-2xl hover-effect text-center group transition-all duration-300 hover:-translate-y-2">
+          <div className="w-16 h-16 mx-auto bg-purple-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
+            <svg className="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">Remote Work</h3>
+          <p className="text-gray-400 text-sm">Equipped for seamless collaboration from anywhere.</p>
+          <p className="mt-4 font-bold text-purple-400">Global availability</p>
+        </div>
+        <div className="glass-card p-8 rounded-2xl hover-effect text-center group transition-all duration-300 hover:-translate-y-2">
+          <div className="w-16 h-16 mx-auto bg-yellow-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-yellow-500/20 transition-colors">
+            <svg className="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">Consultancy</h3>
+          <p className="text-gray-400 text-sm">Expert consultation and team training services.</p>
+          <p className="mt-4 font-bold text-yellow-400">Inquire for rates</p>
+        </div>
+      </div>
+    </div>
+  )
+
+  const projectsSection = () => (
+    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/gps_project.png" alt="Gwabs Payment System" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Gwabs Payment System (GPS)</h3>
+          <p className="text-gray-400 mt-2">High-performance payment orchestration infrastructure bridging Android POS hardware and multiple financial processors (Zone, Grup). Features intelligent switching and automated reconciliation.</p>
+          <div className="flex space-x-2 mt-4">
+            <button onClick={() => handleReadMore('Gwabs Payment System (GPS)', 'Gwabs Payment System (GPS) is a high-performance, secure payment orchestration infrastructure designed to bridge the gap between Android Point of Sale (POS) hardware and multiple financial processors. Engineered for both Agency Banking Networks and High-Volume Merchant Operations, GPS solves the critical industry challenge of transaction reliability. By integrating multiple payment rails—specifically Zone (ISO8583) and Grup (REST)—into a single, unified middleware, GPS ensures that if one route fails, the system dynamically re-routes transactions to alternative high-availability channels. This architecture guarantees superior uptime and seamless payment collection.')} className="flex-1 btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+              Read More
+            </button>
+            <a href="/docs/GPS_Documentation.md" target="_blank" rel="noopener noreferrer" className="flex-1 bg-gray-700 hover:bg-gray-600 text-indigo-400 font-bold py-2 px-4 rounded-full border border-indigo-400 shadow-lg text-center transition-transform transform hover:scale-105">
+              View Docs
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/cba_ride.png" alt="CBA Ride" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">CBA RIDE</h3>
+          <p className="text-gray-400 mt-2">A tricycle booking system similar to Uber/Bolt, offering convenient transport solutions.</p>
+          <button onClick={() => handleReadMore('CBA RIDE', 'CBA RIDE is a tricycle booking system designed to provide efficient and reliable transportation solutions similar to Uber and Bolt. It features real-time ride tracking, secure payment integration, and a user-friendly interface for both riders and drivers.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+
+      <div className="glass-card p-0 rounded-2xl overflow-hidden shadow-2xl hover-effect flex flex-col group">
+        <div className="relative aspect-video bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+          <img src="/images/paywizzard.png" alt="Paywizzard" className="w-full h-full object-cover" />
+        </div>
+        <div className="p-6">
+          <h3 className="text-2xl font-bold text-white mt-4 group-hover:text-indigo-400 transition-colors">Paywizzard</h3>
+          <p className="text-gray-400 mt-2">Bills payment app for buying airtime, data, and paying for services like DSTV, GOTV, and PHCN.</p>
+          <button onClick={() => handleReadMore('Paywizzard', 'Paywizzard is a comprehensive bills payment application that allows users to purchase airtime and data for all networks, as well as pay for utilities and cable TV subscriptions like DSTV, GOTV, and PHCN. Built with Jetpack Compose.')} className="mt-4 w-full btn-gradient text-white font-bold py-2 px-4 rounded-full shadow-lg transition-transform transform hover:scale-105">
+            Read More
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+
+  const reviewsSection = () => (
+    <>
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {reviews.length > 0 ? (
+            reviews.map(review => (
+              <div key={review.id} className="glass-card p-8 rounded-2xl shadow-xl hover-effect relative">
+                <div className="absolute top-4 right-4 text-gray-700 dark:text-gray-600 opacity-20">
+                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 21L14.017 18C14.017 16.054 15.352 14.223 16.924 14.223C17.391 14.223 17.755 14.659 17.755 15.195L17.755 17.181C17.755 18.721 16.126 19.337 15.601 20.082C15.225 20.613 15.539 21 16.183 21L18.799 21C20.672 21 22 19.387 22 17.9L22 13.9C22 12.239 20.661 10.9 18.995 10.9C18.423 10.9 17.904 11.025 17.433 11.238C17.781 10.59 18 9.818 18 8.9C18 6.194 15.761 4 13 4C10.239 4 8 6.194 8 8.9C8 9.818 8.219 10.59 8.567 11.238C8.096 11.025 7.577 10.9 7.005 10.9C5.339 10.9 4 12.239 4 13.9L4 17.9C4 19.387 5.328 21 7.201 21L14.017 21ZM13 6C14.654 6 16 7.346 16 9C16 10.654 14.654 12 13 12C11.346 12 10 10.654 10 9C10 7.346 11.346 6 13 6Z"></path>
+                  </svg>
+                </div>
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold mr-4 text-lg">
+                    {review.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-lg text-white">{review.name}</p>
+                    <div className="flex items-center space-x-1">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <svg key={i} className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+                        </svg>
+                      ))}
+                      {[...Array(5 - review.rating)].map((_, i) => (
+                        <svg key={i + review.rating} className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+                        </svg>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-400 leading-relaxed italic">"{review.message}"</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-400 col-span-full">No reviews yet. Be the first to leave one!</p>
+          )}
+        </div>
+      </div>
+
+      <form onSubmit={handleReviewSubmit} className="glass-card p-10 rounded-2xl shadow-xl hover-effect max-w-2xl mx-auto">
+        <h3 className="text-3xl font-bold text-white mb-8 text-center bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+          Leave a Review
+        </h3>
+        <div className="mb-6">
+          <label htmlFor="reviewName" className="block text-gray-300 font-semibold mb-2">Your Name</label>
+          <input
+            type="text"
+            id="reviewName"
+            name="name"
+            value={newReview.name}
+            onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+            className="w-full px-5 py-3 bg-gray-800/50 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-100 transition-all focus:border-indigo-500"
+            required
+            placeholder="Enter your name"
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-gray-300 font-semibold mb-2">Rating</label>
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5].map(star => (
+              <svg
+                key={star}
+                onClick={() => setNewReview({ ...newReview, rating: star })}
+                className={`h-8 w-8 cursor-pointer transform transition-transform hover:scale-110 ${star <= newReview.rating ? 'text-yellow-400' : 'text-gray-600'} hover:text-yellow-400 transition-colors duration-200`}
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.176 3.611a1.002 1.002 0 00.95.691h3.801c.969 0 1.371 1.24.588 1.81l-3.083 2.237a1.002 1.002 0 00-.364 1.118l1.176 3.611c.3.921-.755 1.688-1.54 1.118l-3.083-2.237a1.002 1.002 0 00-1.176 0l-3.083 2.237c-.784.57-1.838-.197-1.539-1.118l1.176-3.611a1.002 1.002 0 00-.364-1.118L2.049 8.039c-.783-.57-.381-1.81.588-1.81h3.801a1.002 1.002 0 00.95-.691l1.176-3.611z" />
+              </svg>
+            ))}
+          </div>
+        </div>
+        <div className="mb-8">
+          <label htmlFor="reviewMessage" className="block text-gray-300 font-semibold mb-2">Your Review</label>
+          <textarea
+            id="reviewMessage"
+            name="message"
+            value={newReview.message}
+            onChange={(e) => setNewReview({ ...newReview, message: e.target.value })}
+            rows="4"
+            className="w-full px-5 py-3 bg-gray-800/50 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-100 transition-all focus:border-indigo-500"
+            required
+            placeholder="Share your experience..."
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          className="w-full btn-gradient text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform transform hover:scale-[1.02]"
+          disabled={reviewStatus === 'sending'}
+        >
+          {reviewStatus === 'sending' ? 'Submitting...' : 'Submit Review'}
+        </button>
+        {reviewStatus === 'success' && (
+          <p className="mt-4 text-center text-green-400 font-semibold">Review submitted successfully!</p>
+        )}
+        {reviewStatus === 'error' && (
+          <p className="mt-4 text-center text-red-400 font-semibold">An error occurred. Please fill out all fields and try again.</p>
+        )}
+      </form>
+    </>
+  )
+
+  const contactSection = () => (
+    <div className="max-w-xl mx-auto text-gray-300">
+      <p className="text-lg leading-relaxed text-center mb-8">
+        Let's work together! Fill out the form below or connect with me directly.
+      </p>
+      <form action="https://formspree.io/f/xdklbzok" method="POST" onSubmit={handleFormSubmit} className="glass-card p-10 rounded-2xl shadow-xl max-w-2xl mx-auto">
+        <div className="mb-6">
+          <label htmlFor="name" className="block text-gray-300 font-semibold mb-2">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleFormChange}
+            className="w-full px-5 py-3 bg-gray-800/50 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-100 transition-all focus:border-indigo-500"
+            required
+            placeholder="Your Name"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="email" className="block text-gray-300 font-semibold mb-2">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleFormChange}
+            className="w-full px-5 py-3 bg-gray-800/50 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-100 transition-all focus:border-indigo-500"
+            required
+            placeholder="your.email@example.com"
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="subject" className="block text-gray-300 font-semibold mb-2">Subject</label>
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            value={formData.subject}
+            onChange={handleFormChange}
+            className="w-full px-5 py-3 bg-gray-800/50 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-100 transition-all focus:border-indigo-500"
+            required
+            placeholder="What's on your mind?"
+          />
+        </div>
+        <div className="mb-8">
+          <label htmlFor="message" className="block text-gray-300 font-semibold mb-2">Message</label>
+          <textarea
+            id="message"
+            name="message"
+            value={formData.message}
+            onChange={handleFormChange}
+            rows="4"
+            className="w-full px-5 py-3 bg-gray-800/50 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-100 transition-all focus:border-indigo-500"
+            required
+            placeholder="Tell me about your project..."
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          className="w-full btn-gradient text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform transform hover:scale-[1.02]"
+          disabled={formStatus === 'sending'}
+        >
+          {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
+        </button>
+        {formStatus === 'success' && (
+          <p className="mt-4 text-center text-green-400 font-semibold">Message sent successfully!</p>
+        )}
+        {formStatus === 'error' && (
+          <p className="mt-4 text-center text-red-400 font-semibold">An error occurred. Please try again.</p>
+        )}
+      </form>
+      <div className="text-center mt-12">
+        <h3 className="text-2xl font-semibold text-gray-100 mb-6">Connect with Me Directly</h3>
+        <p className="text-gray-400 mb-4">You can reach me via the following channels:</p>
+        <div className="flex justify-center space-x-6">
+          <a href="https://www.linkedin.com/in/abubakar-gwabare-abdullahi-55b3051bb" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-400 transition-colors duration-300">
+            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.763s.784-1.763 1.75-1.763 1.75.79 1.75 1.763-.783 1.763-1.75 1.763zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+            </svg>
+          </a>
+          <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-400 transition-colors duration-300">
+            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.6.11 1.093-.261 1.093-.577v-2.234c-3.338.726-4.043-1.61-4.043-1.61-.542-1.363-1.326-1.724-1.326-1.724-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.304.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.381 1.236-3.221-.124-.3-1.248-3.045.235-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.046.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23 1.483.131.359 2.876.236 3.176.771.84 1.235 1.911 1.235 3.221 0 4.61-2.805 5.625-5.471 5.922.429.369.813 1.103.813 2.222v3.293c0 .319.485.696.923.572 4.453-1.45 7.601-6.096 7.601-11.458 0-6.627-5.373-12-12-12z" />
+            </svg>
+          </a>
+          <a href="https://www.facebook.com/GwabstechSolutions/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-400 transition-colors duration-300">
+            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.873V14.894h-2.54V12h2.54V9.797c0-2.505 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.77-1.63 1.563V12h2.77l-.44 2.894h-2.33v4.979C18.343 21.128 22 16.991 22 12z" />
+            </svg>
+          </a>
+        </div>
+        <div className="flex flex-col items-center mt-6 space-y-2">
+          <a href="mailto:gwabstech@gmail.com" className="text-gray-400 hover:text-indigo-400 transition-colors duration-300 hover-glow">
+            <span className="font-bold">Email:</span> gwabstech@gmail.com
+          </a>
+          <p className="text-gray-400">
+            <span className="font-bold">Phone 1:</span> +234 701 811 6333
+          </p>
+          <p className="text-gray-400">
+            <span className="font-bold">Phone 2:</span> +234 903 086 3146
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      {renderNav()}
+      {heroSection()}
+      {renderSection('about', 'About Me', aboutSection)}
+      {renderSection('skills', 'Technical Skills', skillsSection)}
+      {renderSection('experience', 'Work Experience', experienceSection)}
+      {renderSection('services', 'Services & Availability', servicesSection)}
+      {renderSection('projects', 'Featured Projects', projectsSection)}
+      {renderSection('reviews', 'Client Reviews', reviewsSection)}
+      {renderSection('contact', 'Get In Touch', contactSection)}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-card p-8 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto relative">
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">&times;</button>
+            <h2 className="text-2xl font-bold text-white mb-4">{modalTitle}</h2>
+            {isGenerating ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+              </div>
+            ) : (
+              <div className="prose prose-invert text-gray-300" dangerouslySetInnerHTML={{ __html: generatedContent }}></div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+export default App
