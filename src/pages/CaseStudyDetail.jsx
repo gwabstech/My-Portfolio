@@ -38,7 +38,7 @@ export default function CaseStudyDetail() {
         {study.media?.type === 'youtube' && (
           <div className="mt-8 aspect-video rounded-2xl overflow-hidden">
             <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${study.media.id}`}
-              title={study.title} allowFullScreen frameBorder="0" />
+              title={study.title} allowFullScreen style={{ border: 0 }} />
           </div>
         )}
 

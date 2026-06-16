@@ -16,7 +16,9 @@ export default function ReviewList() {
             <div className="w-10 h-10 rounded-full bg-teal text-teal-ink flex items-center justify-center font-bold">{r.name?.charAt(0)}</div>
             <div>
               <p className="font-bold text-offwhite">{r.name}</p>
-              <div className="text-teal text-sm">{'★'.repeat(r.rating)}<span className="text-surface-border">{'★'.repeat(5 - r.rating)}</span></div>
+              {(() => { const n = Math.max(0, Math.min(5, Number(r.rating) || 0)); return (
+                <div className="text-teal text-sm">{'★'.repeat(n)}<span className="text-surface-border">{'★'.repeat(5 - n)}</span></div>
+              )})()}
             </div>
           </div>
           <p className="text-slate italic">"{r.message}"</p>
