@@ -22,3 +22,9 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+
+# Brainstorming visual-companion scratch files
+.superpowers/
+
+# Local Claude Code settings
+.claude/
