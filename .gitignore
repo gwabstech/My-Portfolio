@@ -25,3 +25,6 @@ Thumbs.db
 
 # Brainstorming visual-companion scratch files
 .superpowers/
+
+# Local Claude Code settings
+.claude/
