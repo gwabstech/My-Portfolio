@@ -15,7 +15,8 @@ export default function Nav() {
   return (
     <nav className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? 'glass-card shadow-lg' : 'bg-transparent'}`}>
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-extrabold text-offwhite font-outfit">
+        <Link to="/" className="flex items-center gap-2.5 text-2xl font-extrabold text-offwhite font-outfit">
+          <img src="/favicon.svg" alt="GWABS logo" className="h-9 w-9 rounded-lg" />
           GWABS<span className="text-teal">.</span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
