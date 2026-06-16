@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useDocumentTitle } from '../lib/seo.js'
 import { getCaseStudy } from '../data/caseStudies.js'
+import CaseStudyCover from '../components/CaseStudyCover.jsx'
 
 function Section({ label, children }) {
   return (
@@ -35,10 +36,14 @@ export default function CaseStudyDetail() {
         <h1 className="mt-1 text-4xl font-extrabold text-offwhite font-outfit">{study.title}</h1>
         <p className="mt-3 text-lg text-slate">{study.hook}</p>
 
-        {study.media?.type === 'youtube' && (
+        {study.media?.type === 'youtube' ? (
           <div className="mt-8 aspect-video rounded-2xl overflow-hidden">
             <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${study.media.id}`}
               title={study.title} allowFullScreen style={{ border: 0 }} />
+          </div>
+        ) : (
+          <div className="mt-8 aspect-video rounded-2xl overflow-hidden border border-surface-border">
+            <CaseStudyCover pillarId={study.pillarId} className="w-full h-full" />
           </div>
         )}
 

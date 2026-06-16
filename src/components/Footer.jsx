@@ -6,7 +6,10 @@ export default function Footer() {
     <footer className="bg-navy-deep text-slate text-sm">
       <div className="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <div className="text-xl font-extrabold text-offwhite font-outfit">GWABS<span className="text-teal">.</span></div>
+          <div className="flex items-center gap-2.5 text-xl font-extrabold text-offwhite font-outfit">
+            <img src="/favicon.svg" alt="GWABS logo" className="h-8 w-8 rounded-lg" />
+            GWABS<span className="text-teal">.</span>
+          </div>
           <p className="mt-3 leading-relaxed">{company.address}</p>
           <p className="mt-2">RC {company.rc} · TIN {company.tin}</p>
           <p className="mt-2 text-xs">Formerly {company.formerName}.</p>

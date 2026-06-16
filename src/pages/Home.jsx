@@ -48,7 +48,9 @@ export default function Home() {
           </p>
           <Link to="/about" className="inline-block mt-5 text-teal font-semibold">About the company →</Link>
         </div>
-        <div className="md:col-span-2 glass-card rounded-2xl h-40" />
+        <div className="md:col-span-2 glass-card rounded-2xl h-48 flex items-center justify-center bg-gradient-to-br from-navy-2 to-navy-deep">
+          <img src="/favicon.svg" alt="GWABS logo" className="h-24 w-24 rounded-2xl opacity-95" />
+        </div>
       </section>
 
       <CTASection />
