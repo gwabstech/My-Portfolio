@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
-const DEFAULT_ACTION = 'https://formspree.io/f/xdklbzok'
+// Override in Vercel with VITE_FORMSPREE_ENDPOINT (set it to the form that
+// delivers to info@gbs.ng) without touching code. Falls back to the existing form.
+const DEFAULT_ACTION = import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/xzdqwwvb'
 
 export default function ContactForm({ action = DEFAULT_ACTION }) {
   const [status, setStatus] = useState(null)
@@ -17,6 +19,10 @@ export default function ContactForm({ action = DEFAULT_ACTION }) {
 
   return (
     <form onSubmit={submit} method="POST" action={action} className="glass-card rounded-2xl p-8 max-w-2xl mx-auto space-y-4">
+      {/* Formspree: sets the email subject and uses the sender's address as reply-to */}
+      <input type="hidden" name="_subject" value="New enquiry from the GWABS website" />
+      {/* Honeypot: bots fill this; humans never see it */}
+      <input type="text" name="_gotcha" tabIndex="-1" autoComplete="off" className="hidden" aria-hidden="true" />
       <div>
         <label htmlFor="c-name" className="block text-slate font-medium mb-1">Name</label>
         <input id="c-name" name="name" required className="w-full px-4 py-2 bg-navy border border-surface-border rounded-lg text-offwhite" />
