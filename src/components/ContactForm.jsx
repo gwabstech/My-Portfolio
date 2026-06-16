@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 // Override in Vercel with VITE_FORMSPREE_ENDPOINT (set it to the form that
 // delivers to info@gbs.ng) without touching code. Falls back to the existing form.
-const DEFAULT_ACTION = import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/xdklbzok'
+const DEFAULT_ACTION = import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/xzdqwwvb'
 
 export default function ContactForm({ action = DEFAULT_ACTION }) {
   const [status, setStatus] = useState(null)
