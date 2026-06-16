@@ -6,6 +6,7 @@ import CaseStudies from './pages/CaseStudies.jsx'
 import CaseStudyDetail from './pages/CaseStudyDetail.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: 'case-studies/:slug', element: <CaseStudyDetail /> },
       { path: 'about', element: <About /> },
       { path: 'contact', element: <Contact /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ])
