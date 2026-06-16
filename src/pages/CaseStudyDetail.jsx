@@ -1,0 +1,65 @@
+import { useParams, Link } from 'react-router-dom'
+import { useDocumentTitle } from '../lib/seo.js'
+import { getCaseStudy } from '../data/caseStudies.js'
+
+function Section({ label, children }) {
+  return (
+    <div className="mt-8">
+      <h2 className="text-xs tracking-[0.2em] font-bold text-teal uppercase">{label}</h2>
+      <p className="mt-2 text-slate leading-relaxed">{children}</p>
+    </div>
+  )
+}
+
+export default function CaseStudyDetail() {
+  const { slug } = useParams()
+  const study = getCaseStudy(slug)
+  useDocumentTitle(study ? study.title : 'Case study not found')
+
+  if (!study) {
+    return (
+      <main className="pt-32 pb-24 container mx-auto px-6 text-center">
+        <h1 className="text-2xl font-bold text-offwhite">Case study not found</h1>
+        <Link to="/case-studies" className="text-teal mt-4 inline-block">← Back to case studies</Link>
+      </main>
+    )
+  }
+
+  return (
+    <main className="pt-28 pb-20">
+      <div className="container mx-auto px-6 max-w-3xl">
+        <Link to="/case-studies" className="text-slate hover:text-teal text-sm">← Case studies</Link>
+        <p className="mt-4 text-xs">
+          <span className={study.isOwnProduct ? 'text-teal font-semibold' : 'text-slate'}>{study.client}</span>
+        </p>
+        <h1 className="mt-1 text-4xl font-extrabold text-offwhite font-outfit">{study.title}</h1>
+        <p className="mt-3 text-lg text-slate">{study.hook}</p>
+
+        {study.media?.type === 'youtube' && (
+          <div className="mt-8 aspect-video rounded-2xl overflow-hidden">
+            <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${study.media.id}`}
+              title={study.title} allowFullScreen frameBorder="0" />
+          </div>
+        )}
+
+        <Section label="The Problem">{study.problem}</Section>
+        <Section label="Our Solution">{study.solution}</Section>
+        <Section label="Impact">{study.impact}</Section>
+
+        <div className="mt-8">
+          <h2 className="text-xs tracking-[0.2em] font-bold text-teal uppercase">Tech</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {study.tech.map(t => (
+              <span key={t} className="text-xs py-1 px-3 rounded-full bg-surface border border-surface-border text-slate">{t}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-12 glass-card rounded-2xl p-6 text-center">
+          <p className="text-offwhite font-semibold">Want something similar built or integrated?</p>
+          <Link to="/contact" className="inline-block mt-4 btn-gradient font-semibold py-2.5 px-6 rounded-full">Book a consultation</Link>
+        </div>
+      </div>
+    </main>
+  )
+}
