@@ -2,7 +2,7 @@ import { useDocumentTitle } from '../lib/seo.js'
 import ReviewList from '../components/ReviewList.jsx'
 import ReviewForm from '../components/ReviewForm.jsx'
 import CTASection from '../components/CTASection.jsx'
-import { company } from '../data/company.js'
+import { company, media } from '../data/company.js'
 
 export default function About() {
   useDocumentTitle('About')
@@ -16,6 +16,14 @@ export default function About() {
         <p className="mt-4 text-slate leading-relaxed">
           Our work spans the full payments stack, from EMV card acceptance on terminal hardware to ISO 8583 switching, terminal management, and SaaS business platforms. We hold PCI DSS-aligned expertise and design for CBN compliance.
         </p>
+        <a
+          href={media.capabilityStatement}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 mt-6 btn-gradient font-semibold py-3 px-8 rounded-full"
+        >
+          <span>↓</span> Download capability statement (PDF)
+        </a>
       </section>
 
       <section className="container mx-auto px-6 max-w-3xl mt-12">
