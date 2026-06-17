@@ -6,6 +6,7 @@ import StatsBand from '../components/StatsBand.jsx'
 import CTASection from '../components/CTASection.jsx'
 import SolutionCard from '../components/SolutionCard.jsx'
 import CaseStudyCard from '../components/CaseStudyCard.jsx'
+import ExplainerVideo from '../components/ExplainerVideo.jsx'
 import { solutions } from '../data/solutions.js'
 import { caseStudies } from '../data/caseStudies.js'
 import { company } from '../data/company.js'
@@ -17,6 +18,8 @@ export default function Home() {
     <main>
       <Hero />
       <TrustBar />
+
+      <ExplainerVideo />
 
       <section className="container mx-auto px-6 py-20">
         <h2 className="text-3xl font-extrabold text-offwhite font-outfit text-center">What we do</h2>

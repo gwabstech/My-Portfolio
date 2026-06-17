@@ -30,3 +30,8 @@ export const stats = [
   { value: 'PCI DSS', label: 'Certified expertise' },
   { value: 'Live', label: 'Production deployments' },
 ]
+
+export const media = {
+  explainerVideo: '/media/engineered-to-settle.mp4',
+  capabilityStatement: '/docs/GWABS_Capability_Statement.pdf',
+}
