@@ -30,4 +30,16 @@ describe('case studies data', () => {
     const pillarIds = new Set(solutions.map(s => s.id))
     for (const c of caseStudies) expect(pillarIds.has(c.pillarId)).toBe(true)
   })
+  it('Reconcile and Gwabs Business Suite are live products with valid URLs', () => {
+    const reconcile = getCaseStudy('reconcile')
+    expect(reconcile.title).toMatch(/Reconcile/)
+    expect(reconcile.liveUrl).toBe('https://reconcile.ng')
+    expect(reconcile.isOwnProduct).toBe(true)
+    expect(getCaseStudy('gwabs-business-suite').liveUrl).toBe('https://gbs.ng')
+  })
+  it('any liveUrl is an absolute https URL', () => {
+    for (const c of caseStudies) {
+      if (c.liveUrl) expect(c.liveUrl).toMatch(/^https:\/\//)
+    }
+  })
 })

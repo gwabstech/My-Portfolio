@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useDocumentTitle } from '../lib/seo.js'
 import { getCaseStudy } from '../data/caseStudies.js'
 import CaseStudyCover from '../components/CaseStudyCover.jsx'
+import LivePreview from '../components/LivePreview.jsx'
 
 function Section({ label, children }) {
   return (
@@ -36,11 +37,20 @@ export default function CaseStudyDetail() {
         <h1 className="mt-1 text-4xl font-extrabold text-offwhite font-outfit">{study.title}</h1>
         <p className="mt-3 text-lg text-slate">{study.hook}</p>
 
+        {study.liveUrl && (
+          <a href={study.liveUrl} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-4 btn-gradient font-semibold py-2.5 px-6 rounded-full">
+            Visit live site <span aria-hidden="true">↗</span>
+          </a>
+        )}
+
         {study.media?.type === 'youtube' ? (
           <div className="mt-8 aspect-video rounded-2xl overflow-hidden">
             <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${study.media.id}`}
               title={study.title} allowFullScreen style={{ border: 0 }} />
           </div>
+        ) : study.liveUrl ? (
+          <LivePreview url={study.liveUrl} pillarId={study.pillarId} title={study.title} />
         ) : (
           <div className="mt-8 aspect-video rounded-2xl overflow-hidden border border-surface-border">
             <CaseStudyCover pillarId={study.pillarId} className="w-full h-full" />
