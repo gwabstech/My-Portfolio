@@ -3,8 +3,8 @@ import { caseStudies, getCaseStudy } from './caseStudies.js'
 import { solutions } from './solutions.js'
 
 describe('case studies data', () => {
-  it('has 8 flagships', () => {
-    expect(caseStudies).toHaveLength(8)
+  it('has 9 flagships', () => {
+    expect(caseStudies).toHaveLength(9)
   })
   it('each has the required fields', () => {
     for (const c of caseStudies) {
@@ -41,5 +41,12 @@ describe('case studies data', () => {
     for (const c of caseStudies) {
       if (c.liveUrl) expect(c.liveUrl).toMatch(/^https:\/\//)
     }
+  })
+  it('Otech MFB engagement is present and linked to the client site', () => {
+    const otech = getCaseStudy('otech-mfb-pos-as-a-service')
+    expect(otech.client).toBe('Otech MFB')
+    expect(otech.clientUrl).toBe('https://www.otechbank.com')
+    expect(otech.liveUrl).toBeUndefined()
+    expect(otech.status).toBeTruthy()
   })
 })
