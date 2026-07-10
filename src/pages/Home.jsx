@@ -36,7 +36,7 @@ export default function Home() {
             {featured.map(c => <CaseStudyCard key={c.slug} study={c} />)}
           </div>
           <div className="text-center mt-8">
-            <Link to="/case-studies" className="border border-surface-border text-slate hover:text-teal font-semibold py-3 px-8 rounded-full transition-colors">View all 8 case studies →</Link>
+            <Link to="/case-studies" className="border border-surface-border text-slate hover:text-teal font-semibold py-3 px-8 rounded-full transition-colors">View all {caseStudies.length} case studies →</Link>
           </div>
         </div>
       </section>

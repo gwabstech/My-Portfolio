@@ -31,8 +31,20 @@ export default function CaseStudyDetail() {
     <main className="pt-28 pb-20">
       <div className="container mx-auto px-6 max-w-3xl">
         <Link to="/case-studies" className="text-slate hover:text-teal text-sm">← Case studies</Link>
-        <p className="mt-4 text-xs">
-          <span className={study.isOwnProduct ? 'text-teal font-semibold' : 'text-slate'}>{study.client}</span>
+        <p className="mt-4 text-xs flex items-center gap-2 flex-wrap">
+          {study.clientUrl ? (
+            <a href={study.clientUrl} target="_blank" rel="noopener noreferrer"
+              className={`hover:underline ${study.isOwnProduct ? 'text-teal font-semibold' : 'text-slate'}`}>
+              {study.client} ↗
+            </a>
+          ) : (
+            <span className={study.isOwnProduct ? 'text-teal font-semibold' : 'text-slate'}>{study.client}</span>
+          )}
+          {study.status && (
+            <span className="text-[10px] font-bold uppercase tracking-wide text-slate border border-surface-border rounded-full px-2 py-0.5">
+              {study.status}
+            </span>
+          )}
         </p>
         <h1 className="mt-1 text-4xl font-extrabold text-offwhite font-outfit">{study.title}</h1>
         <p className="mt-3 text-lg text-slate">{study.hook}</p>

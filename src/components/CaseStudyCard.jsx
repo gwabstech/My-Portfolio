@@ -6,11 +6,15 @@ export default function CaseStudyCard({ study }) {
     <Link to={`/case-studies/${study.slug}`} className="glass-card rounded-2xl overflow-hidden flex flex-col group hover:-translate-y-1 transition-transform">
       <div className="relative">
         <CaseStudyCover pillarId={study.pillarId} className="h-32 w-full" />
-        {study.liveUrl && (
+        {study.liveUrl ? (
           <span className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-bold text-teal-ink bg-teal rounded-full px-2 py-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-teal-ink animate-pulse" /> LIVE
           </span>
-        )}
+        ) : study.status ? (
+          <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wide text-offwhite bg-navy-deep/80 border border-surface-border rounded-full px-2 py-0.5">
+            {study.status}
+          </span>
+        ) : null}
       </div>
       <div className="p-5">
         <h3 className="text-lg font-bold text-offwhite font-outfit group-hover:text-teal transition-colors">{study.title}</h3>
