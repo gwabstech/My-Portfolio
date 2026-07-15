@@ -30,6 +30,8 @@ export const trustBadges = [
   "Topwise",
   "Urovo",
   "Blumen",
+  "Otech MFB",
+  "Regent MFB",
 ];
 
 export const stats = [
