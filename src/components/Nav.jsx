@@ -22,11 +22,11 @@ export default function Nav() {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.filter(l => l.to !== '/').map(l => (
             <NavLink key={l.to} to={l.to}
-              className={({ isActive }) => `text-sm font-medium transition-colors ${isActive ? 'text-teal' : 'text-slate hover:text-teal'}`}>
+              className={({ isActive }) => `text-sm 3xl:text-base font-medium transition-colors ${isActive ? 'text-teal' : 'text-slate hover:text-teal'}`}>
               {l.label}
             </NavLink>
           ))}
-          <Link to="/contact" className="btn-gradient font-semibold text-sm py-2 px-5 rounded-full">Get in touch</Link>
+          <Link to="/contact" className="btn-gradient font-semibold text-sm 3xl:text-base py-2 px-5 rounded-full">Get in touch</Link>
         </div>
         <button className="md:hidden text-slate" onClick={() => setOpen(!open)} aria-label="Toggle menu">
           <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" /></svg>

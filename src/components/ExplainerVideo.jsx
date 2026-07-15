@@ -4,12 +4,12 @@ export default function ExplainerVideo() {
   return (
     <section className="container mx-auto px-6 py-20">
       <div className="max-w-3xl mx-auto text-center">
-        <h2 className="text-3xl font-extrabold text-offwhite font-outfit">See how GWABS works</h2>
+        <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit">See how GWABS works</h2>
         <p className="mt-3 text-slate">
           A two-minute look at how we engineer payments end to end — from the terminal to the switch.
         </p>
       </div>
-      <div className="mt-10 max-w-4xl mx-auto rounded-2xl overflow-hidden border border-surface-border shadow-2xl">
+      <div className="mt-10 max-w-4xl 3xl:max-w-5xl mx-auto rounded-2xl overflow-hidden border border-surface-border shadow-2xl">
         <video
           className="w-full h-full block bg-navy-deep"
           controls

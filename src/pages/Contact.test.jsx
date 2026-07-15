@@ -7,7 +7,7 @@ describe('Contact', () => {
   it('shows the form and the company contact details', () => {
     render(<MemoryRouter><Contact /></MemoryRouter>)
     expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument()
-    expect(screen.getByText(/info@gbs.ng/)).toBeInTheDocument()
+    expect(screen.getByText(/info@gwabs\.com/)).toBeInTheDocument()
     expect(screen.getByText(/\+234 903 086 3146/)).toBeInTheDocument()
   })
 })

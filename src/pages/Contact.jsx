@@ -6,9 +6,9 @@ export default function Contact() {
   useDocumentTitle('Contact')
   return (
     <main className="pt-28 pb-20">
-      <section className="container mx-auto px-6 max-w-5xl grid md:grid-cols-2 gap-10">
+      <section className="container mx-auto px-6 max-w-5xl 3xl:max-w-6xl grid md:grid-cols-2 gap-10 3xl:gap-16">
         <div>
-          <h1 className="text-4xl font-extrabold text-offwhite font-outfit">Get in touch</h1>
+          <h1 className="text-4xl 3xl:text-5xl font-extrabold text-offwhite font-outfit">Get in touch</h1>
           <p className="mt-3 text-slate">Tell us about your payments project. We respond within one business day.</p>
           <dl className="mt-8 space-y-4 text-slate">
             <div>
