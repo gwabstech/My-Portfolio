@@ -9,7 +9,7 @@ describe('company data', () => {
     expect(company.tin).toBe('2623758929985')
   })
   it('exposes contact details', () => {
-    expect(company.email).toBe('info@gbs.ng')
+    expect(company.email).toBe('info@gwabs.com')
     expect(company.phone).toBe('+234 903 086 3146')
     expect(company.address).toMatch(/Karu, Abuja/)
   })

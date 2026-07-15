@@ -16,6 +16,15 @@
   --offwhite: #F4F7FB;
 }
 
+/* Scale the whole rem-based layout up on very large screens (27"+ monitors) */
+@media (min-width: 1920px) {
+  html { font-size: 17px; }
+}
+
+@media (min-width: 2560px) {
+  html { font-size: 18px; }
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--navy);

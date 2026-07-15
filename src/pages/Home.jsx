@@ -21,18 +21,18 @@ export default function Home() {
 
       <ExplainerVideo />
 
-      <section className="container mx-auto px-6 py-20">
-        <h2 className="text-3xl font-extrabold text-offwhite font-outfit text-center">What we do</h2>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="container mx-auto px-6 py-20 3xl:py-28">
+        <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit text-center">What we do</h2>
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 2xl:gap-8">
           {solutions.map(s => <SolutionCard key={s.id} solution={s} />)}
         </div>
       </section>
 
-      <section className="bg-navy-deep py-20">
+      <section className="bg-navy-deep py-20 3xl:py-28">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-extrabold text-offwhite font-outfit text-center">Featured work</h2>
+          <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit text-center">Featured work</h2>
           <p className="text-center text-slate mt-2">Selected engagements — clients credited.</p>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 2xl:gap-8">
             {featured.map(c => <CaseStudyCard key={c.slug} study={c} />)}
           </div>
           <div className="text-center mt-8">
@@ -43,16 +43,16 @@ export default function Home() {
 
       <StatsBand />
 
-      <section className="container mx-auto px-6 py-20 grid md:grid-cols-5 gap-10 items-center">
+      <section className="container mx-auto px-6 py-20 3xl:py-28 grid md:grid-cols-5 gap-10 items-center">
         <div className="md:col-span-3">
-          <h2 className="text-3xl font-extrabold text-offwhite font-outfit">Built by payment engineers</h2>
+          <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit">Built by payment engineers</h2>
           <p className="mt-4 text-slate leading-relaxed">
             Formerly <span className="text-teal font-semibold">{company.formerName}</span>, now incorporated as {company.legalName} (RC {company.rc}). We specialise in secure, compliant payment systems — from the terminal to the switch.
           </p>
           <Link to="/about" className="inline-block mt-5 text-teal font-semibold">About the company →</Link>
         </div>
-        <div className="md:col-span-2 glass-card rounded-2xl h-48 flex items-center justify-center bg-gradient-to-br from-navy-2 to-navy-deep">
-          <img src="/favicon.svg" alt="GWABS logo" className="h-24 w-24 rounded-2xl opacity-95" />
+        <div className="md:col-span-2 glass-card rounded-2xl h-48 3xl:h-64 flex items-center justify-center bg-gradient-to-br from-navy-2 to-navy-deep">
+          <img src="/favicon.svg" alt="GWABS logo" className="h-24 w-24 3xl:h-32 3xl:w-32 rounded-2xl opacity-95" />
         </div>
       </section>
 

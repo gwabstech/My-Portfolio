@@ -7,7 +7,7 @@ describe('Footer', () => {
   it('shows company registration and contact facts', () => {
     render(<MemoryRouter><Footer /></MemoryRouter>)
     expect(screen.getByText(/RC 9482405/)).toBeInTheDocument()
-    expect(screen.getByText(/info@gbs.ng/)).toBeInTheDocument()
+    expect(screen.getByText(/info@gwabs\.com/)).toBeInTheDocument()
     expect(screen.getByText(/Karu, Abuja/)).toBeInTheDocument()
   })
 })

@@ -29,7 +29,7 @@ export default function CaseStudyDetail() {
 
   return (
     <main className="pt-28 pb-20">
-      <div className="container mx-auto px-6 max-w-3xl">
+      <div className="container mx-auto px-6 max-w-3xl 3xl:max-w-4xl">
         <Link to="/case-studies" className="text-slate hover:text-teal text-sm">← Case studies</Link>
         <p className="mt-4 text-xs flex items-center gap-2 flex-wrap">
           {study.clientUrl ? (
@@ -46,7 +46,7 @@ export default function CaseStudyDetail() {
             </span>
           )}
         </p>
-        <h1 className="mt-1 text-4xl font-extrabold text-offwhite font-outfit">{study.title}</h1>
+        <h1 className="mt-1 text-4xl 3xl:text-5xl font-extrabold text-offwhite font-outfit">{study.title}</h1>
         <p className="mt-3 text-lg text-slate">{study.hook}</p>
 
         {study.liveUrl && (
