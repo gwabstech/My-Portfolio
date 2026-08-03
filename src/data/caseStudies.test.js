@@ -3,8 +3,8 @@ import { caseStudies, getCaseStudy } from './caseStudies.js'
 import { solutions } from './solutions.js'
 
 describe('case studies data', () => {
-  it('has 9 flagships', () => {
-    expect(caseStudies).toHaveLength(9)
+  it('has 10 flagships', () => {
+    expect(caseStudies).toHaveLength(10)
   })
   it('each has the required fields', () => {
     for (const c of caseStudies) {
@@ -41,6 +41,13 @@ describe('case studies data', () => {
     for (const c of caseStudies) {
       if (c.liveUrl) expect(c.liveUrl).toMatch(/^https:\/\//)
     }
+  })
+  it('Okada FleetOS is a live GWABS product in pilot', () => {
+    const fleetos = getCaseStudy('okada-fleetos')
+    expect(fleetos.title).toMatch(/Okada FleetOS/)
+    expect(fleetos.isOwnProduct).toBe(true)
+    expect(fleetos.liveUrl).toBe('https://okadaos.ng')
+    expect(fleetos.status).toBeTruthy()
   })
   it('Otech MFB engagement is present and linked to the client site', () => {
     const otech = getCaseStudy('otech-mfb-pos-as-a-service')
