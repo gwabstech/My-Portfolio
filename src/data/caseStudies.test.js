@@ -3,8 +3,8 @@ import { caseStudies, getCaseStudy } from './caseStudies.js'
 import { solutions } from './solutions.js'
 
 describe('case studies data', () => {
-  it('has 10 flagships', () => {
-    expect(caseStudies).toHaveLength(10)
+  it('has 11 flagships', () => {
+    expect(caseStudies).toHaveLength(11)
   })
   it('each has the required fields', () => {
     for (const c of caseStudies) {
@@ -48,6 +48,13 @@ describe('case studies data', () => {
     expect(fleetos.isOwnProduct).toBe(true)
     expect(fleetos.liveUrl).toBe('https://okadaos.ng')
     expect(fleetos.status).toBeTruthy()
+  })
+  it('Regent MFB engagement is present and linked to the client site', () => {
+    const regent = getCaseStudy('regent-mfb-merchant-platform')
+    expect(regent.client).toBe('Regent MFB')
+    expect(regent.clientUrl).toBe('https://www.regentmfb.com')
+    expect(regent.liveUrl).toBeUndefined()
+    expect(regent.status).toBeTruthy()
   })
   it('Otech MFB engagement is present and linked to the client site', () => {
     const otech = getCaseStudy('otech-mfb-pos-as-a-service')
