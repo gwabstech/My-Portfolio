@@ -1,7 +1,14 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDocumentTitle } from '../lib/seo.js'
 import Hero from '../components/Hero.jsx'
 import TrustBar from '../components/TrustBar.jsx'
+import SolutionsExplorer from '../components/SolutionsExplorer.jsx'
+import HowItWorks from '../components/HowItWorks.jsx'
+import InstitutionalPerformance from '../components/InstitutionalPerformance.jsx'
+import DeveloperShowcase from '../components/DeveloperShowcase.jsx'
+import ScaleBanner from '../components/ScaleBanner.jsx'
+import LightInfrastructureSection from '../components/LightInfrastructureSection.jsx'
 import StatsBand from '../components/StatsBand.jsx'
 import CTASection from '../components/CTASection.jsx'
 import SolutionCard from '../components/SolutionCard.jsx'
@@ -9,53 +16,125 @@ import CaseStudyCard from '../components/CaseStudyCard.jsx'
 import ExplainerVideo from '../components/ExplainerVideo.jsx'
 import { solutions } from '../data/solutions.js'
 import { caseStudies } from '../data/caseStudies.js'
-import { company } from '../data/company.js'
 
 export default function Home() {
   useDocumentTitle('')
-  const featured = caseStudies.slice(0, 3)
+  const [featuredTab, setFeaturedTab] = useState('all')
+
+  const filteredStudies =
+    featuredTab === 'all'
+      ? caseStudies.slice(0, 6)
+      : featuredTab === 'products'
+      ? caseStudies.filter((c) => c.isOwnProduct)
+      : caseStudies.filter((c) => !c.isOwnProduct).slice(0, 6)
+
   return (
-    <main>
+    <main className="overflow-hidden">
+      {/* 1. Combined Dribbble Hero (3D Shield + Floating Hexagonal Pillar Nodes) */}
       <Hero />
+
+      {/* 2. Categorized 3-Column Ecosystem & Compliance Trust Bar */}
       <TrustBar />
 
+      {/* 3. Interactive Split Dark/White Solutions & Deployment Configurator ("Live Markets" Shot 1) */}
+      <SolutionsExplorer />
+
+      {/* 4. 3-Step Connected Process Flow ("How it Works" Shot 1 & 2) */}
+      <HowItWorks />
+
+      {/* 5. 4-Pillar Engineering Grid ("What we do") */}
+      <section className="container mx-auto px-6 py-20 3xl:py-28">
+        <div className="max-w-2xl mx-auto text-center">
+          <span className="text-xs font-mono uppercase tracking-[0.2em] text-teal">
+            CORE CAPABILITIES
+          </span>
+          <h2 className="mt-2 text-3xl sm:text-4xl 3xl:text-5xl font-extrabold text-offwhite font-outfit">
+            What we do
+          </h2>
+          <p className="mt-3 text-slate text-sm sm:text-base">
+            End-to-end payment engineering across physical POS terminals, high-availability switching, vendor-agnostic SDKs, and multi-tenant platforms.
+          </p>
+        </div>
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 2xl:gap-8">
+          {solutions.map((s) => (
+            <SolutionCard key={s.id} solution={s} />
+          ))}
+        </div>
+      </section>
+
+      {/* 6. Auto-Playing Institutional Performance Carousel ("Built for Institutional Performance" Shot 2) */}
+      <InstitutionalPerformance />
+
+      {/* 7. Developer & SDK Code Preview ("Build on Alula" Shot 1 Top-Right) */}
+      <DeveloperShowcase />
+
+      {/* 8. Featured Work & Production Deployments Showcase */}
+      <section className="bg-navy-deep/80 border-y border-surface-border py-20 3xl:py-28">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+              <span className="text-xs font-mono uppercase tracking-[0.2em] text-teal">
+                PRODUCTION TRACK RECORD
+              </span>
+              <h2 className="mt-2 text-3xl sm:text-4xl 3xl:text-5xl font-extrabold text-offwhite font-outfit">
+                Featured work
+              </h2>
+              <p className="text-slate mt-2 text-sm sm:text-base">
+                Selected fintech engagements &amp; proprietary SaaS platforms — clients credited.
+              </p>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: 'all', label: 'Featured (6)' },
+                { id: 'products', label: 'GWABS SaaS Products' },
+                { id: 'client', label: 'Bank & Processor Consultancy' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setFeaturedTab(tab.id)}
+                  className={`text-xs font-semibold px-4 py-2 rounded-full border transition-all ${
+                    featuredTab === tab.id
+                      ? 'bg-teal text-teal-ink border-teal shadow-md'
+                      : 'border-surface-border bg-surface/70 text-slate hover:text-teal'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 2xl:gap-8">
+            {filteredStudies.map((c) => (
+              <CaseStudyCard key={c.slug} study={c} />
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              to="/case-studies"
+              className="inline-flex items-center gap-2 border border-teal/40 bg-surface/80 text-offwhite hover:border-teal hover:text-teal font-semibold py-3.5 px-8 rounded-full transition-all shadow-lg"
+            >
+              View all {caseStudies.length} case studies →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Scale Operations Banner + 3-Column Divider Strip (Shot 1 & 2 Right) */}
+      <ScaleBanner />
+
+      {/* 10. High-Contrast Light Section ("Secure infrastructure for modern payment markets" Shot 1 Bottom-Right) */}
+      <LightInfrastructureSection />
+
+      {/* 11. Explainer Video Walkthrough */}
       <ExplainerVideo />
 
-      <section className="container mx-auto px-6 py-20 3xl:py-28">
-        <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit text-center">What we do</h2>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 2xl:gap-8">
-          {solutions.map(s => <SolutionCard key={s.id} solution={s} />)}
-        </div>
-      </section>
-
-      <section className="bg-navy-deep py-20 3xl:py-28">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit text-center">Featured work</h2>
-          <p className="text-center text-slate mt-2">Selected engagements — clients credited.</p>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 2xl:gap-8">
-            {featured.map(c => <CaseStudyCard key={c.slug} study={c} />)}
-          </div>
-          <div className="text-center mt-8">
-            <Link to="/case-studies" className="border border-surface-border text-slate hover:text-teal font-semibold py-3 px-8 rounded-full transition-colors">View all {caseStudies.length} case studies →</Link>
-          </div>
-        </div>
-      </section>
-
+      {/* 12. Stats Band & Final Consultation CTA */}
       <StatsBand />
-
-      <section className="container mx-auto px-6 py-20 3xl:py-28 grid md:grid-cols-5 gap-10 items-center">
-        <div className="md:col-span-3">
-          <h2 className="text-3xl 3xl:text-4xl font-extrabold text-offwhite font-outfit">Built by payment engineers</h2>
-          <p className="mt-4 text-slate leading-relaxed">
-            Formerly <span className="text-teal font-semibold">{company.formerName}</span>, now incorporated as {company.legalName} (RC {company.rc}). We specialise in secure, compliant payment systems — from the terminal to the switch.
-          </p>
-          <Link to="/about" className="inline-block mt-5 text-teal font-semibold">About the company →</Link>
-        </div>
-        <div className="md:col-span-2 glass-card rounded-2xl h-48 3xl:h-64 flex items-center justify-center bg-gradient-to-br from-navy-2 to-navy-deep">
-          <img src="/favicon.svg" alt="GWABS logo" className="h-24 w-24 3xl:h-32 3xl:w-32 rounded-2xl opacity-95" />
-        </div>
-      </section>
-
       <CTASection />
     </main>
   )

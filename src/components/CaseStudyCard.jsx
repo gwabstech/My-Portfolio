@@ -1,28 +1,72 @@
 import { Link } from 'react-router-dom'
 import CaseStudyCover from './CaseStudyCover.jsx'
+import TiltCard from './TiltCard.jsx'
 
 export default function CaseStudyCard({ study }) {
   return (
-    <Link to={`/case-studies/${study.slug}`} className="glass-card rounded-2xl overflow-hidden flex flex-col group hover:-translate-y-1 transition-transform">
-      <div className="relative">
-        <CaseStudyCover pillarId={study.pillarId} className="h-32 2xl:h-40 w-full" />
-        {study.liveUrl ? (
-          <span className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-bold text-teal-ink bg-teal rounded-full px-2 py-0.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-ink animate-pulse" /> LIVE
+    <TiltCard intensity={9} className="rounded-2xl flex flex-col h-full">
+      <Link
+        to={`/case-studies/${study.slug}`}
+        className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between h-full group"
+      >
+        <div>
+          <div className="relative overflow-hidden">
+            <CaseStudyCover
+              pillarId={study.pillarId}
+              className="h-36 2xl:h-44 w-full group-hover:scale-105 transition-transform duration-500"
+            />
+            {study.liveUrl ? (
+              <span className="absolute top-3 right-3 flex items-center gap-1.5 text-[10px] font-bold text-teal-ink bg-teal rounded-full px-2.5 py-0.5 shadow-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-ink animate-pulse" /> LIVE
+              </span>
+            ) : study.status ? (
+              <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wide text-[#F4F7FB] bg-[#040A18]/85 border border-teal/35 rounded-full px-2.5 py-0.5 backdrop-blur-sm">
+                {study.status}
+              </span>
+            ) : null}
+          </div>
+
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-2 text-xs mb-1.5">
+              <span
+                className={
+                  study.isOwnProduct
+                    ? 'text-teal font-semibold font-mono'
+                    : 'text-slate font-medium'
+                }
+              >
+                {study.client}
+              </span>
+              <span className="text-[10px] font-mono uppercase text-slate/70">
+                {study.pillarId}
+              </span>
+            </div>
+
+            <h3 className="text-lg 3xl:text-xl font-bold text-offwhite font-outfit group-hover:text-teal transition-colors">
+              {study.title}
+            </h3>
+            <p className="mt-2 text-sm text-slate leading-relaxed">
+              {study.hook}
+            </p>
+          </div>
+        </div>
+
+        <div className="px-5 sm:px-6 pb-5 pt-3 border-t border-surface-border/60 flex items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-1.5">
+            {study.tech?.slice(0, 3).map((t) => (
+              <span
+                key={t}
+                className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-surface/90 border border-surface-border text-slate"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+          <span className="text-xs font-semibold text-teal group-hover:translate-x-1 transition-transform shrink-0">
+            Inspect →
           </span>
-        ) : study.status ? (
-          <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wide text-offwhite bg-navy-deep/80 border border-surface-border rounded-full px-2 py-0.5">
-            {study.status}
-          </span>
-        ) : null}
-      </div>
-      <div className="p-5">
-        <h3 className="text-lg 3xl:text-xl font-bold text-offwhite font-outfit group-hover:text-teal transition-colors">{study.title}</h3>
-        <p className="mt-1 text-xs">
-          <span className={study.isOwnProduct ? 'text-teal font-semibold' : 'text-slate'}>{study.client}</span>
-        </p>
-        <p className="mt-2 text-sm text-slate">{study.hook}</p>
-      </div>
-    </Link>
+        </div>
+      </Link>
+    </TiltCard>
   )
 }

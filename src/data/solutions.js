@@ -2,6 +2,7 @@ export const solutions = [
   {
     id: 'pos-apps',
     icon: '▣',
+    badge: 'TERMINAL ENGINEERING',
     title: 'POS Terminal Applications',
     summary: 'Secure Android payment apps built for the field — chip, contactless, and PIN on real terminal hardware.',
     points: [
@@ -10,10 +11,19 @@ export const solutions = [
       'Agency banking, merchant collection, and bill/airtime vending',
       'Offline resilience, receipt printing, and geofence compliance',
     ],
+    metrics: {
+      baseAvailability: 99.94,
+      latencyMs: 320,
+      deploymentWeeks: '4–6 wks',
+      compliance: 'EMV L1/L2 · CBN Geofence',
+      stack: ['Kotlin', 'Android POS', 'EMV / NFC', 'HiveMQ MQTT', 'CBN Geofence'],
+    },
+    architectureFlow: ['Card / NFC Tap', 'Encrypted PIN Pad', 'Local Queue & Geofence', 'ISO 8583 / REST Gateway', 'Instant Receipt'],
   },
   {
     id: 'switching',
     icon: '⇄',
+    badge: 'HIGH-AVAILABILITY CORE',
     title: 'Payment Switching & Middleware',
     summary: 'High-availability transaction routing across multiple processors with intelligent failover.',
     points: [
@@ -22,10 +32,19 @@ export const solutions = [
       'Terminal key exchange, reversals, and reconciliation',
       'Encrypted payloads and signed webhooks',
     ],
+    metrics: {
+      baseAvailability: 99.98,
+      latencyMs: 185,
+      deploymentWeeks: '6–8 wks',
+      compliance: 'PCI DSS · AES-256-GCM · HMAC',
+      stack: ['Kotlin', 'Ktor', 'jPOS (ISO 8583)', 'NIBSS / Interswitch', 'Auto-Reversal'],
+    },
+    architectureFlow: ['POS / API Ingress', 'BIN Routing Engine', 'TMK/TPK Key Exchange', 'Multi-Rail Failover', 'Signed Webhook & Ledger'],
   },
   {
     id: 'sdks',
     icon: '⚙',
+    badge: 'UNIFIED HARDWARE HAL',
     title: 'Device & Hardware SDKs',
     summary: 'Reusable payment SDKs that hide vendor differences behind one consistent API.',
     points: [
@@ -34,10 +53,19 @@ export const solutions = [
       'Key management, secure PIN, and transaction persistence',
       'Production-verified across device families',
     ],
+    metrics: {
+      baseAvailability: 99.99,
+      latencyMs: 45,
+      deploymentWeeks: '2–4 wks',
+      compliance: 'DUKPT · BouncyCastle · EMV Kernel',
+      stack: ['Kotlin / Java', 'Flutter Bridge', 'Topwise / Urovo / Blumen HAL', 'SQLite Persistence'],
+    },
+    architectureFlow: ['Host Android / Flutter App', 'GWABS Unified API', 'Vendor HAL Adapter', 'Hardware Security Module', 'Verified EMV Kernel'],
   },
   {
     id: 'software',
     icon: '◈',
+    badge: 'PLATFORMS & ADVISORY',
     title: 'Fintech Software & Consultancy',
     summary: 'SaaS platforms and advisory for banks, MFBs, and fintech operators.',
     points: [
@@ -46,5 +74,13 @@ export const solutions = [
       'Terminal Management Systems (TMS) and real-time infrastructure',
       'CBN/PCI-aware architecture and compliance advisory',
     ],
+    metrics: {
+      baseAvailability: 99.96,
+      latencyMs: 110,
+      deploymentWeeks: '6–10 wks',
+      compliance: 'CBN / PCI Advisory · Multi-Tenant RBAC',
+      stack: ['Kotlin / Ktor', 'React / TypeScript', 'PostgreSQL / Flyway', 'Docker / K8s', 'Virtual Accounts'],
+    },
+    architectureFlow: ['Web / Mobile Consoles', 'Multi-Tenant RBAC & KYC', 'Money & Ledger Engine', 'TMS & Fleet Telematics', 'Automated Settlement'],
   },
 ]
