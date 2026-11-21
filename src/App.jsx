@@ -3,6 +3,7 @@ import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 import { ThemeProvider } from './lib/theme.jsx'
 import Nav from './components/Nav.jsx'
 import Footer from './components/Footer.jsx'
+import QuickConnectLauncher from './components/QuickConnectLauncher.jsx'
 
 function HashScrollHandler() {
   const { pathname, hash } = useLocation()
@@ -27,13 +28,14 @@ function HashScrollHandler() {
 export default function App() {
   return (
     <ThemeProvider>
-      <div className="min-h-screen flex flex-col bg-navy text-offwhite transition-colors duration-300">
+      <div className="min-h-screen flex flex-col bg-navy text-offwhite transition-colors duration-300 antialiased selection:bg-teal selection:text-teal-ink">
         <Nav />
         <HashScrollHandler />
         <div className="flex-1">
           <Outlet />
         </div>
         <Footer />
+        <QuickConnectLauncher />
         <ScrollRestoration />
       </div>
     </ThemeProvider>
