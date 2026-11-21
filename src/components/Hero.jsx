@@ -16,9 +16,11 @@ const HERO_SERVICES = [
     step: '01',
     icon: '▣',
     label: 'POS Terminal Apps',
-    offer: 'Card Insert → PIN Auth → Charge → Instant Receipt',
+    outcome: 'Ship in 4–6 wks',
+    offer: 'Custom Android EMV, NFC tap, PIN & instant thermal receipt apps',
     sub: 'EMV · NFC · PIN',
     to: '/solutions#pos-apps',
+    topic: 'Android POS Terminal Application & EMV Deployment',
     orbitPos: 'top-2 left-2',
     liveAction: 'POS IN MOTION · CARD INSERTED → PIN VERIFIED → CHARGED → RECEIPT PRINTED',
     liveMeta: 'Topwise · Urovo · Blumen · CBN 50m Geofence Active',
@@ -28,9 +30,11 @@ const HERO_SERVICES = [
     step: '02',
     icon: '⇄',
     label: 'ISO 8583 Switching',
-    offer: 'Multi-Processor BIN Routing & Automatic Failover',
+    outcome: '99.98% Uptime',
+    offer: 'Intelligent BIN routing & automatic failover across NIBSS & processors',
     sub: 'BIN Failover Router',
     to: '/solutions#switching',
+    topic: 'Multi-Processor ISO 8583 Payment Switching & Failover',
     orbitPos: 'top-2 right-2',
     liveAction: 'SWITCH ROUTING · MTI 0200 → NIBSS / CORALPAY 0210 (180ms)',
     liveMeta: 'Zero-Downtime BIN Failover · TMK/TPK Key Exchange',
@@ -40,9 +44,11 @@ const HERO_SERVICES = [
     step: '03',
     icon: '⚙',
     label: 'Unified Device SDKs',
-    offer: 'One Kotlin & Flutter Payment HAL Across All OEMs',
+    outcome: '3x Faster OEM Cert',
+    offer: 'One Kotlin & Flutter payment HAL driving Topwise, Urovo & Blumen',
     sub: 'Topwise · Urovo · Blumen',
     to: '/solutions#sdks',
+    topic: 'Unified POS Hardware HAL SDK Licensing & Integration',
     orbitPos: 'bottom-20 left-2',
     liveAction: 'HAL SDK KERNEL · 1 API CALL DRIVING 3 POS VENDORS SIMULTANEOUSLY',
     liveMeta: 'Write Payment Logic Once · Native Android & Flutter Bridge',
@@ -52,9 +58,11 @@ const HERO_SERVICES = [
     step: '04',
     icon: '◈',
     label: 'Multi-Tenant SaaS & TMS',
-    offer: 'Fleet Radar, Lending (LMS), Virtual Accounts & POS-as-a-Service',
+    outcome: 'Turnkey MFB Stack',
+    offer: 'POS-as-a-Service, Fleet TMS, Lending (LMS) & T+0 Virtual Accounts',
     sub: 'TMS · LMS · FleetOS',
     to: '/solutions#software',
+    topic: 'Managed POS-as-a-Service, TMS & Multi-Tenant Banking SaaS',
     orbitPos: 'bottom-20 right-2',
     liveAction: 'T+0 SETTLEMENT · CBN RADAR LOCK & PER-POS VIRTUAL ACCOUNT',
     liveMeta: 'BlumenTMS · Gwabs Business Suite · Reconcile · Okada FleetOS',
@@ -65,7 +73,6 @@ export default function Hero() {
   const [activeIdx, setActiveIdx] = useState(0)
   const [paused, setPaused] = useState(false)
 
-  // Auto-roll through the 4 services (gives POS device 7s so user sees full Insert -> PIN -> Charge -> Receipt cycle!)
   useEffect(() => {
     if (paused) return
     const duration = activeIdx === 0 ? 7000 : 4800
@@ -87,30 +94,30 @@ export default function Hero() {
 
       <div className="container relative z-10 mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          {/* Left Column: Value Proposition + "What We Offer at First Glance" 4-Service Matrix */}
+          {/* Left Column: High-Impact Commercial Pitch + 4-Service Interactive Matrix */}
           <div className="lg:col-span-7 text-left">
             <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface/90 border border-teal/35 shadow-lg mb-5">
               <span className="w-2 h-2 rounded-full bg-teal animate-ping" />
-              <p className="text-[11px] sm:text-xs 3xl:text-sm tracking-[0.18em] font-bold text-teal uppercase">
+              <p className="text-[11px] sm:text-xs 3xl:text-sm tracking-[0.16em] font-bold text-teal uppercase">
                 FINTECH SOLUTIONS &amp; CONSULTANCY
               </p>
               <span className="hidden sm:inline-block text-slate/40">|</span>
               <span className="hidden sm:inline-block text-[11px] font-mono text-offwhite">
-                POS · SWITCHING · SDKs · SAAS
+                TRUSTED BY MFBs &amp; PROCESSORS
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl xl:text-6xl 3xl:text-7xl font-extrabold text-offwhite font-outfit leading-[1.07] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl xl:text-6xl 3xl:text-7xl font-extrabold text-offwhite font-outfit leading-[1.06] tracking-tight">
               Fintech infrastructure,
               <br />
               <span className="text-gradient">engineered to settle.</span>
             </h1>
 
             <p className="mt-4 max-w-2xl text-base sm:text-lg 3xl:text-xl text-slate leading-relaxed">
-              {company.whatWeDo} We engineer the complete payments stack for Nigerian banks, microfinance institutions, processors, and fleet operators.
+              {company.whatWeDo} Ship certified Android POS fleets, zero-downtime ISO 8583 switching, and multi-vendor payment SDKs in weeks — not years.
             </p>
 
-            {/* Core Services Matrix */}
+            {/* Core Services Matrix with Commercial Outcome Badges */}
             <div className="mt-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {HERO_SERVICES.map((srv, idx) => {
@@ -123,11 +130,11 @@ export default function Hero() {
                       className={`text-left rounded-2xl p-3.5 border transition-all flex items-start gap-3 ${
                         isSelected
                           ? 'obsidian-panel border-teal shadow-[0_0_25px_-5px_rgba(0,194,168,0.4)] scale-[1.01]'
-                          : 'glass-card border-surface-border hover:border-teal/40 opacity-85 hover:opacity-100'
+                          : 'glass-card border-surface-border hover:border-teal/40 opacity-90 hover:opacity-100'
                       }`}
                     >
                       <span
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 ${
+                        className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 mt-0.5 ${
                           isSelected
                             ? 'bg-teal text-teal-ink shadow-[0_0_12px_#00C2A8]'
                             : 'bg-teal/15 text-teal border border-teal/30'
@@ -138,15 +145,19 @@ export default function Hero() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs sm:text-sm font-extrabold font-outfit text-offwhite truncate">
-                            {srv.step}. {srv.label}
+                            {srv.label}
                           </span>
-                          {isSelected && (
-                            <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-teal/20 text-teal border border-teal/40 shrink-0">
-                              3D LIVE
-                            </span>
-                          )}
+                          <span
+                            className={`text-[9.5px] font-mono px-2 py-0.5 rounded-full shrink-0 ${
+                              isSelected
+                                ? 'bg-teal text-teal-ink font-bold'
+                                : 'bg-white/5 text-teal border border-teal/30'
+                            }`}
+                          >
+                            {srv.outcome}
+                          </span>
                         </div>
-                        <p className="text-xs text-slate mt-0.5 line-clamp-1">
+                        <p className="text-xs text-slate mt-1 leading-snug">
                           {srv.offer}
                         </p>
                       </div>
@@ -156,22 +167,21 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Pill CTAs */}
+            {/* Conversion-Focused CTAs */}
             <div className="mt-7 flex flex-wrap items-center gap-3.5">
               <Link
-                to="/solutions"
-                className="btn-gradient font-semibold py-3.5 px-7 rounded-full text-sm sm:text-base inline-flex items-center gap-2"
+                to={`/contact?topic=${encodeURIComponent(activeService.topic)}`}
+                className="btn-gradient font-extrabold py-3.5 px-7 rounded-full text-sm sm:text-base inline-flex items-center gap-2 shadow-xl"
               >
-                <span>Explore solutions</span>
+                <span>Discuss Your Project</span>
                 <span aria-hidden="true">→</span>
               </Link>
-              <a
-                href="#service-journey"
+              <Link
+                to="/solutions"
                 className="btn-white-pill font-bold py-3.5 px-6 rounded-full text-sm sm:text-base inline-flex items-center gap-2"
               >
-                <span className="w-2 h-2 rounded-full bg-teal-ink animate-ping" />
-                <span>3D POS &amp; Services Walkthrough</span>
-              </a>
+                <span>Explore solutions</span>
+              </Link>
               <Link
                 to="/contact"
                 className="glass-card border border-surface-border hover:border-teal/50 text-offwhite hover:text-teal font-semibold py-3.5 px-6 rounded-full text-sm sm:text-base transition-all inline-flex items-center gap-2"
@@ -180,9 +190,19 @@ export default function Hero() {
                 <span aria-hidden="true" className="text-xs">↗</span>
               </Link>
             </div>
+
+            {/* Social Proof Micro-Bar */}
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate">
+              <span className="inline-flex items-center gap-1.5 text-offwhite font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                11+ Live Systems in Production
+              </span>
+              <span>•</span>
+              <span>Powering Otech MFB, Regent MFB, Bellbank &amp; TeasyPay</span>
+            </div>
           </div>
 
-          {/* Right Column: 3D Orbital Circle Stage with Live Animated POS (Card Insert -> PIN -> Charge -> Receipt) & All Services */}
+          {/* Right Column: 3D Orbital Circle Stage with Live Animated POS (Card Insert -> PIN -> Charge -> Receipt) */}
           <div className="lg:col-span-5">
             <TiltCard
               intensity={10}
@@ -257,17 +277,17 @@ export default function Hero() {
                 })}
               </div>
 
-              {/* Bottom Live Auto-Rolling POS & Service Telemetry HUD Bar */}
+              {/* Bottom Live Action & Instant Discussion Trigger */}
               <div className="relative z-30 rounded-2xl bg-[#040B1A]/95 border border-teal/40 p-3 shadow-xl">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] font-mono font-bold text-teal truncate">
                     {activeService.liveAction}
                   </span>
                   <Link
-                    to={activeService.to}
-                    className="px-2 py-0.5 rounded bg-teal/20 text-teal hover:bg-teal hover:text-teal-ink font-mono text-[9px] font-bold shrink-0 transition-colors"
+                    to={`/contact?topic=${encodeURIComponent(activeService.topic)}`}
+                    className="px-2.5 py-1 rounded-full bg-teal text-teal-ink hover:brightness-110 font-mono text-[9.5px] font-extrabold shrink-0 transition-all"
                   >
-                    Specs →
+                    Deploy This →
                   </Link>
                 </div>
                 <p className="text-[10.5px] text-[#9FB2D0] mt-0.5 truncate">

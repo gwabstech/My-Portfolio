@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { company } from '../data/company.js'
 
 // Override in Vercel with VITE_FORMSPREE_ENDPOINT (set it to the form that
 // delivers to info@gbs.ng) without touching code. Falls back to the existing form.
@@ -14,6 +15,29 @@ const QUICK_TOPICS = [
 export default function ContactForm({ action = DEFAULT_ACTION }) {
   const [status, setStatus] = useState(null)
   const [subject, setSubject] = useState('')
+  const [messagePrefill, setMessagePrefill] = useState('')
+
+  // Auto-populate Subject & Message if visitor arrived from a solution or estimator CTA (?topic=...&fleet=...&tx=...)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const topic = params.get('topic')
+    const fleet = params.get('fleet')
+    const tx = params.get('tx')
+
+    if (topic) {
+      setSubject(topic)
+    }
+    if (topic && (fleet || tx)) {
+      setMessagePrefill(
+        `We are interested in ${topic} for approximately ${
+          fleet ? `${Number(fleet).toLocaleString()} POS terminals/endpoints` : 'our network'
+        }${
+          tx ? ` handling ~${Number(tx).toLocaleString()} daily transactions` : ''
+        }. Please share an architecture roadmap and consultation slot.`
+      )
+    }
+  }, [])
 
   const submit = async (e) => {
     e.preventDefault()
@@ -27,6 +51,7 @@ export default function ContactForm({ action = DEFAULT_ACTION }) {
       if (res.ok) {
         setStatus('success')
         setSubject('')
+        setMessagePrefill('')
         e.target.reset()
       } else {
         setStatus('error')
@@ -38,20 +63,32 @@ export default function ContactForm({ action = DEFAULT_ACTION }) {
     }
   }
 
+  const cleanPhone = company.phone.replace(/\D/g, '')
+  const whatsappHref = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
+    `Hello GWABS Engineering Team, I'd like to discuss: ${
+      subject || 'a payment infrastructure / POS project'
+    }. ${messagePrefill}`
+  )}`
+
   return (
     <form
       onSubmit={submit}
       method="POST"
       action={action}
-      className="glass-card rounded-3xl p-7 sm:p-9 max-w-2xl mx-auto space-y-5 border border-teal/30 shadow-2xl"
+      className="glass-card rounded-3xl p-7 sm:p-9 max-w-2xl mx-auto space-y-5 border border-teal/35 shadow-2xl"
     >
-      <div className="pb-3 border-b border-surface-border">
-        <span className="text-[11px] font-mono uppercase tracking-widest text-teal block">
-          ARCHITECTURE &amp; PROJECT BRIEF
+      <div className="pb-3 border-b border-surface-border flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span className="text-[11px] font-mono uppercase tracking-widest text-teal block">
+            ARCHITECTURE &amp; PROJECT BRIEF
+          </span>
+          <h2 className="text-2xl font-extrabold text-offwhite font-outfit mt-1">
+            Initiate a technical discussion
+          </h2>
+        </div>
+        <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/35 text-emerald-300 font-bold">
+          ● Engineers Online
         </span>
-        <h2 className="text-2xl font-extrabold text-offwhite font-outfit mt-1">
-          Start a technical conversation
-        </h2>
       </div>
 
       {/* Formspree: sets the email subject and uses the sender's address as reply-to */}
@@ -69,7 +106,7 @@ export default function ContactForm({ action = DEFAULT_ACTION }) {
       {/* Quick Topic Chips */}
       <div>
         <span className="block text-xs font-mono uppercase tracking-wider text-slate mb-2">
-          Quick Select Scope (Optional)
+          Select Project Scope (1-Click Prefill)
         </span>
         <div className="flex flex-wrap gap-2">
           {QUICK_TOPICS.map((topic) => (
@@ -79,7 +116,7 @@ export default function ContactForm({ action = DEFAULT_ACTION }) {
               onClick={() => setSubject(topic)}
               className={`text-xs px-3 py-1.5 rounded-full border transition-all ${
                 subject === topic
-                  ? 'bg-teal text-teal-ink border-teal font-semibold'
+                  ? 'bg-teal text-teal-ink border-teal font-semibold shadow'
                   : 'bg-surface border-surface-border text-slate hover:border-teal/50 hover:text-offwhite'
               }`}
             >
@@ -140,26 +177,38 @@ export default function ContactForm({ action = DEFAULT_ACTION }) {
           name="message"
           rows={5}
           required
+          defaultValue={messagePrefill}
           placeholder="Tell us about your terminal fleet, target processors, timeline, or integration requirements..."
           className="w-full px-4 py-2.5 bg-navy border border-surface-border focus:border-teal focus:outline-none rounded-xl text-offwhite text-sm"
         />
       </div>
 
-      <button
-        type="submit"
-        className="btn-gradient font-semibold py-3.5 px-8 rounded-full w-full text-sm sm:text-base"
-      >
-        {status === 'sending' ? 'Sending...' : 'Send message'}
-      </button>
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1">
+        <button
+          type="submit"
+          className="sm:col-span-7 btn-gradient font-extrabold py-3.5 px-8 rounded-full w-full text-sm sm:text-base shadow-lg"
+        >
+          {status === 'sending' ? 'Sending...' : 'Send message'}
+        </button>
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sm:col-span-5 py-3.5 px-5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-[#032018] font-extrabold text-sm text-center flex items-center justify-center gap-1.5 shadow-lg transition-colors"
+        >
+          <span>Chat on WhatsApp</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
 
       {status === 'success' && (
         <p className="text-teal text-center text-sm font-medium">
-          Message sent — we&apos;ll be in touch.
+          Message sent — our engineering lead will respond shortly.
         </p>
       )}
       {status === 'error' && (
         <p className="text-red-400 text-center text-sm font-medium">
-          Something went wrong. Try emailing us directly.
+          Something went wrong. Try emailing or WhatsApping us directly.
         </p>
       )}
     </form>

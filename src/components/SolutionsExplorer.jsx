@@ -12,10 +12,13 @@ export default function SolutionsExplorer() {
   const activeSolution = solutions.find((s) => s.id === activeId) || solutions[0]
   const matchingStudies = caseStudies.filter((c) => c.pillarId === activeSolution.id).slice(0, 3)
 
-  // Calculate realistic engineering throughput metrics based on sliders
   const peakTps = Math.max(12, Math.round((dailyTx / 86400) * 14 + terminals / 450))
   const monthlyTxMillions = ((dailyTx * 30) / 1_000_000).toFixed(1)
   const targetSla = activeSolution.metrics?.baseAvailability || 99.98
+
+  const proposalUrl = `/contact?topic=${encodeURIComponent(
+    activeSolution.title
+  )}&fleet=${terminals}&tx=${dailyTx}`
 
   return (
     <section
@@ -25,13 +28,13 @@ export default function SolutionsExplorer() {
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto text-center mb-12">
           <span className="inline-block text-xs font-mono uppercase tracking-[0.2em] text-teal mb-2">
-            INTERACTIVE ARCHITECTURE CONFIGURATOR
+            DEPLOYMENT &amp; SCALE ESTIMATOR
           </span>
           <h2 className="text-3xl sm:text-4xl 3xl:text-5xl font-extrabold text-offwhite font-outfit leading-tight">
             Live Payment Rails &amp; Infrastructure Opportunities
           </h2>
           <p className="mt-3 text-slate text-sm sm:text-base">
-            Select a core engineering pillar and model your terminal fleet or transaction throughput.
+            Configure your target terminal fleet and daily transaction volume to generate a tailored architecture roadmap.
           </p>
         </div>
 
@@ -80,7 +83,7 @@ export default function SolutionsExplorer() {
                             : 'text-[#9FB2D0]/60'
                         }`}
                       >
-                        {isSelected ? 'Active' : 'Select'}
+                        {isSelected ? 'Selected' : 'Select'}
                       </span>
                     </div>
 
@@ -94,14 +97,13 @@ export default function SolutionsExplorer() {
               })}
             </div>
 
-            {/* Right Crisp White Interactive Card (Dribbble Shot 1 Contrast) */}
+            {/* Right Crisp White Interactive Card */}
             <div className="lg:col-span-7 flex">
               <TiltCard
                 intensity={5}
                 glareColor="rgba(2, 86, 205, 0.08)"
                 className="light-showcase-card rounded-2xl p-6 sm:p-8 w-full flex flex-col justify-between"
               >
-                {/* Top Header Bar inside White Card */}
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-200">
                     <div className="flex items-center gap-3">
@@ -117,15 +119,15 @@ export default function SolutionsExplorer() {
                         </span>
                       </div>
                     </div>
-                    <span className="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-slate-100 text-[#06122B] border border-slate-200">
-                      Delivery: {activeSolution.metrics?.deploymentWeeks}
+                    <span className="text-xs font-mono font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                      Est. Delivery: {activeSolution.metrics?.deploymentWeeks}
                     </span>
                   </div>
 
                   {/* Interactive Slider 1: Terminal / Endpoint Fleet */}
                   <div className="mt-6">
                     <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-[#06122B] mb-2">
-                      <label htmlFor="fleet-slider">Active POS Terminals / Endpoints</label>
+                      <label htmlFor="fleet-slider">Target POS Terminals / Endpoints</label>
                       <span className="font-mono text-base font-extrabold text-[#06122B]">
                         {terminals.toLocaleString()} units
                       </span>
@@ -150,7 +152,7 @@ export default function SolutionsExplorer() {
                   {/* Interactive Slider 2: Daily Transaction Volume */}
                   <div className="mt-6">
                     <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-[#06122B] mb-2">
-                      <label htmlFor="tx-slider">Daily Transaction Volume</label>
+                      <label htmlFor="tx-slider">Expected Daily Transactions</label>
                       <span className="font-mono text-base font-extrabold text-[#06122B]">
                         {dailyTx.toLocaleString()} tx/day
                       </span>
@@ -175,7 +177,7 @@ export default function SolutionsExplorer() {
                   {/* Architecture Pipeline Chips */}
                   <div className="mt-6 pt-5 border-t border-slate-200/80">
                     <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5">
-                      End-to-End Execution Pipeline
+                      Included Execution Pipeline
                     </p>
                     <div className="flex flex-wrap items-center gap-1.5">
                       {activeSolution.architectureFlow?.map((step, i) => (
@@ -192,7 +194,7 @@ export default function SolutionsExplorer() {
                   </div>
                 </div>
 
-                {/* Bottom Metrics Summary & Gradient CTA (Matches Dribbble Shot 1 White Card Bottom) */}
+                {/* Bottom Metrics Summary & Pre-Filled Proposal CTA */}
                 <div className="mt-6 pt-5 border-t border-slate-200">
                   <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
                     <div className="space-y-1">
@@ -201,7 +203,7 @@ export default function SolutionsExplorer() {
                         <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
                       </p>
                       <p className="text-xs text-slate-500">
-                        Projected Monthly Volume ({peakTps} Peak TPS)
+                        Engineered Capacity ({peakTps} Peak TPS)
                       </p>
                     </div>
                     <div className="text-left sm:text-right">
@@ -214,10 +216,9 @@ export default function SolutionsExplorer() {
                     </div>
                   </div>
 
-                  {/* Related Shipped Case Studies Quick Links */}
                   {matchingStudies.length > 0 && (
                     <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-semibold text-slate-500">Proven in production:</span>
+                      <span className="font-semibold text-slate-500">Live references:</span>
                       {matchingStudies.map((cs) => (
                         <Link
                           key={cs.slug}
@@ -232,16 +233,16 @@ export default function SolutionsExplorer() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Link
-                      to={`/solutions#${activeSolution.id}`}
-                      className="btn-alula-cta text-center font-semibold py-3.5 px-6 rounded-xl text-sm"
+                      to={proposalUrl}
+                      className="btn-alula-cta text-center font-extrabold py-3.5 px-6 rounded-xl text-sm shadow-lg"
                     >
-                      Inspect {activeSolution.title} →
+                      Get Proposal for {terminals.toLocaleString()} Units →
                     </Link>
                     <Link
-                      to="/contact"
+                      to={`/solutions#${activeSolution.id}`}
                       className="text-center font-semibold py-3.5 px-6 rounded-xl text-sm bg-[#06122B] text-white hover:bg-[#0D2A5C] transition-colors"
                     >
-                      Scope this architecture
+                      View Full Technical Specs
                     </Link>
                   </div>
                 </div>

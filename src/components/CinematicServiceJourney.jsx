@@ -15,10 +15,11 @@ const JOURNEY_SCENES = [
     icon: '▣',
     servicePillar: 'POS Terminal Applications',
     pillarLink: '/solutions#pos-apps',
+    topic: 'Custom Android POS Terminal App & EMV Deployment',
     badge: 'CARD INSERT → PIN → CHARGE → RECEIPT',
-    title: 'Customer Inserts Card, Authorizes PIN, Gets Charged & Receipt Prints',
+    title: 'Turn Every Android POS Terminal Into a High-Earning Banking Branch',
     summary:
-      'Watch our physical POS terminal flow in real time: the customer inserts their EMV chip card (or taps NFC), keys in their 4-digit PIN on the encrypted keypad, gets charged in milliseconds, and a printed thermal receipt unrolls automatically.',
+      'Watch our physical terminal workflow live: the customer inserts their EMV chip card (or taps NFC), authorizes their 4-digit PIN on the hardware keypad, gets charged in milliseconds, and receives an instant printed thermal receipt.',
     telemetry: [
       { label: '1. Card Insert & Read', value: 'EMV L1/L2 Chip AID + NFC Contactless Tap' },
       { label: '2. PIN Authorization', value: 'Hardware PIN Pad · DUKPT 3DES/AES PinBlock' },
@@ -26,10 +27,10 @@ const JOURNEY_SCENES = [
       { label: '4. Thermal Receipt', value: 'Auto-printed customer & merchant copy' },
     ],
     deliverables: [
-      'Custom Android POS Apps',
+      'Custom Android POS Apps (4–6 wks)',
       'EMV Chip, NFC & PIN Flows',
-      'Agency Banking & Cashout',
-      'Instant Thermal Receipt Printing',
+      'Agency Banking, Bills & IGR',
+      'Offline Queue & Receipt Printing',
     ],
     caseStudy: {
       title: 'Getpayed Android POS',
@@ -43,10 +44,11 @@ const JOURNEY_SCENES = [
     icon: '⇄',
     servicePillar: 'Payment Switching & Middleware',
     pillarLink: '/solutions#switching',
-    badge: '3D ORBITAL ISO 8583 SWITCH',
-    title: 'Intelligent BIN Routing & Zero-Downtime Processor Failover',
+    topic: 'Multi-Processor ISO 8583 Payment Switch & BIN Failover',
+    badge: '99.98% CASHOUT AVAILABILITY',
+    title: 'Never Lose a Transaction to Single-Processor Downtime Again',
     summary:
-      'The encrypted ISO 8583 (0200) charge packet enters our 3D orbital switch core. It routes dynamically by card BIN across NIBSS, Interswitch, CoralPay, and Zone — automatically re-routing in <180ms if any processor slows down.',
+      'Every encrypted ISO 8583 (0200) charge routes dynamically by card BIN across NIBSS, Interswitch, CoralPay, and Zone. If a primary processor lags or drops, our switch re-routes in under 180ms with automatic timeout reversals.',
     telemetry: [
       { label: 'Ingress Protocol', value: 'ISO 8583 (jPOS) + TLS Mutual Auth REST' },
       { label: 'Primary Route', value: 'NIBSS EPMS / CoralPay Direct (180ms)' },
@@ -57,7 +59,7 @@ const JOURNEY_SCENES = [
       'Multi-Processor ISO 8583 Switch',
       'Intelligent BIN Routing Engine',
       'Automated Timeout Reversals',
-      'Bank & Processor Connectors',
+      'TMK / TPK Terminal Key Exchange',
     ],
     caseStudy: {
       title: 'Bellbank Cashout Middleware',
@@ -71,10 +73,11 @@ const JOURNEY_SCENES = [
     icon: '⚙',
     servicePillar: 'Device & Hardware SDKs',
     pillarLink: '/solutions#sdks',
-    badge: '3D EXPLODED HARDWARE HAL',
-    title: 'One Payment SDK Driving Topwise, Urovo & Blumen Simultaneously',
+    topic: 'Unified POS Hardware HAL SDK Licensing (Topwise / Urovo / Blumen)',
+    badge: '1 CODEBASE · ALL POS VENDORS',
+    title: 'Stop Rewriting Payment Logic for Every New POS Manufacturer',
     summary:
-      'Instead of rewriting payment code for every POS manufacturer, our unified Hardware Abstraction Layer (HAL) lets one Kotlin or Flutter call drive card readers, DUKPT key slots, and thermal printers across all terminal vendors.',
+      'Onboard new terminal hardware 3x faster. Our production-verified Hardware Abstraction Layer (HAL) lets one clean Kotlin or Flutter call drive card readers, DUKPT key slots, and printers across Topwise, Urovo, and Blumen.',
     telemetry: [
       { label: 'Unified API', value: 'GwabsPosSdk.chargeCard() → Native & Flutter' },
       { label: 'Supported HALs', value: 'Topwise + Urovo + Blumen in 1 artifact' },
@@ -99,10 +102,11 @@ const JOURNEY_SCENES = [
     icon: '◈',
     servicePillar: 'Fintech Software & Consultancy',
     pillarLink: '/solutions#software',
-    badge: '3D FLEET RADAR & T+0 VAULTS',
-    title: 'Fleet TMS Radar, Sub-ms Alerts & Multi-Tenant T+0 Settlement',
+    topic: 'Managed POS-as-a-Service, TMS & Multi-Tenant Banking Platform',
+    badge: 'TURNKEY BANKING & FLEET PLATFORMS',
+    title: 'Launch Full Merchant, Agency Banking & Fleet Platforms Rapidly',
     summary:
-      'Our 3D fleet radar enforces CBN 50m geofences and pushes <15ms WebSocket voice/screen alerts to terminals, while funds settle into isolated per-POS virtual accounts across our banking, lending, and fleet platforms.',
+      'Whether you need a managed POS-as-a-Service stack for an MFB, remote fleet control with CBN 50m geofence lockouts, sub-millisecond WebSocket terminal alerts, or automated T+0 virtual account reconciliation — we deliver end to end.',
     telemetry: [
       { label: 'Fleet Control', value: 'BlumenTMS Canary APK OTA & Geofence Kill-Switch' },
       { label: 'Push Latency', value: '< 15ms via Ktor Netty WebSocket Alert Gateway' },
@@ -129,13 +133,12 @@ export default function CinematicServiceJourney() {
   const sectionRef = useRef(null)
   const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
-  const [scrollSync, setScrollSync] = useState(true)
+  const [scrollSync] = useState(true)
   const [progress, setProgress] = useState(0)
   const [vendorIdx, setVendorIdx] = useState(0)
   const [failoverSimulated, setFailoverSimulated] = useState(false)
   const [forcedPosPhase, setForcedPosPhase] = useState(null)
 
-  // Auto-rolling timer (gives POS Card-Insert -> PIN -> Charge -> Receipt 7s to play out completely)
   useEffect(() => {
     if (!isPlaying) return
     const tickMs = activeSceneIndex === 0 ? 140 : 110
@@ -152,7 +155,6 @@ export default function CinematicServiceJourney() {
     return () => clearInterval(interval)
   }, [isPlaying, activeSceneIndex])
 
-  // Scroll-driven progression: as the user scrolls through this section, rotate the 3D Orbital Circle & POS phases
   useEffect(() => {
     if (!scrollSync || typeof window === 'undefined') return
     const onScroll = () => {
@@ -160,7 +162,6 @@ export default function CinematicServiceJourney() {
       if (!el) return
       const rect = el.getBoundingClientRect()
       const vh = window.innerHeight || 800
-      // Only drive when section is actively scrolling through viewport
       if (rect.top < vh * 0.65 && rect.bottom > vh * 0.35) {
         const totalTravel = rect.height + vh * 0.3
         const currentTravel = vh * 0.65 - rect.top
@@ -199,8 +200,8 @@ export default function CinematicServiceJourney() {
               Watch Our Services in Action:{' '}
               <span className="text-gradient">Card Insert → Auth → Charge → Receipt</span>
             </h2>
-            <p className="mt-3 text-slate text-sm sm:text-base">
-              From a customer inserting their EMV card and authorizing PIN to ISO 8583 switch routing and instant thermal receipt printing across our full payments stack.
+            <p className="mt-3 text-slate text-sm sm:text-base leading-relaxed">
+              See how our engineering powers every millisecond of a payment — from a customer inserting their EMV card on an Android terminal to ISO 8583 switch failover and instant T+0 settlement.
             </p>
           </div>
 
@@ -212,19 +213,7 @@ export default function CinematicServiceJourney() {
               aria-label={isPlaying ? 'Pause walkthrough' : 'Play walkthrough'}
               className="px-4 py-2 rounded-full bg-surface border border-teal/40 text-xs font-mono font-bold text-teal hover:bg-teal hover:text-teal-ink transition-all"
             >
-              {isPlaying ? '⏸ Pause Auto-Flow' : '▶ Auto-Flow'}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setScrollSync((s) => !s)}
-              className={`px-3.5 py-2 rounded-full border text-xs font-mono transition-all ${
-                scrollSync
-                  ? 'bg-teal/15 border-teal/50 text-teal font-bold'
-                  : 'bg-surface border-surface-border text-slate'
-              }`}
-            >
-              {scrollSync ? '◎ Scroll-Sync ON' : '○ Scroll-Sync OFF'}
+              {isPlaying ? '⏸ Pause Motion' : '▶ Resume Motion'}
             </button>
 
             <button
@@ -232,7 +221,7 @@ export default function CinematicServiceJourney() {
               onClick={() => setVendorIdx((v) => (v + 1) % TERMINAL_VENDORS.length)}
               className="px-3.5 py-2 rounded-full bg-surface border border-surface-border hover:border-teal/40 text-xs font-mono text-offwhite transition-all"
             >
-              OEM: <span className="text-teal font-bold">{currentVendor}</span> ↻
+              Terminal: <span className="text-teal font-bold">{currentVendor}</span> ↻
             </button>
 
             <button
@@ -268,7 +257,6 @@ export default function CinematicServiceJourney() {
                     : 'glass-card border-surface-border hover:border-teal/40 opacity-85 hover:opacity-100'
                 }`}
               >
-                {/* Circular 3D Service Badge */}
                 <span
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-bold shrink-0 transition-all ${
                     isCurrent
@@ -281,7 +269,7 @@ export default function CinematicServiceJourney() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between text-[10px] font-mono mb-0.5">
                     <span className={isCurrent ? 'text-teal font-bold' : 'text-slate'}>
-                      SERVICE {item.stepNumber}
+                      0{idx + 1} · PILLAR
                     </span>
                     <span
                       className={`w-2 h-2 rounded-full ${
@@ -314,7 +302,7 @@ export default function CinematicServiceJourney() {
           })}
         </div>
 
-        {/* Main 3D Orbital Stage + Service Narrative & Telemetry */}
+        {/* Main 3D Orbital Stage + Commercial Narrative & Telemetry */}
         <div className="obsidian-panel rounded-3xl p-6 sm:p-8 lg:p-10 border border-teal/40 shadow-2xl relative overflow-hidden">
           <div
             aria-hidden="true"
@@ -340,7 +328,7 @@ export default function CinematicServiceJourney() {
                 <div className="w-full flex flex-wrap items-center justify-between gap-1.5 pb-3 border-b border-white/10 text-[10px] font-mono">
                   <span className="text-teal font-bold flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-teal animate-ping" />
-                    3D OBJECT IN MOTION
+                    LIVE 3D SIMULATION
                   </span>
                   <div className="flex items-center gap-1">
                     <button
@@ -402,9 +390,9 @@ export default function CinematicServiceJourney() {
                   {activeSceneIndex === 3 && <FleetAndSaas3DMotion />}
                 </div>
 
-                {/* Bottom Orbital Circle Navigation Dots */}
+                {/* Bottom Bar */}
                 <div className="w-full pt-3 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-[#9FB2D0]">
-                  <span>ORBITAL RING: {scene.servicePillar}</span>
+                  <span>{scene.servicePillar}</span>
                   <button
                     type="button"
                     onClick={() => setForcedPosPhase(null)}
@@ -416,12 +404,12 @@ export default function CinematicServiceJourney() {
               </TiltCard>
             </div>
 
-            {/* RIGHT COLUMN (Cols 6-12): Service Story, Deliverables & White Telemetry Card */}
+            {/* RIGHT COLUMN (Cols 6-12): Commercial Story, Deliverables & White Telemetry Card */}
             <div className="lg:col-span-7 space-y-6">
-              {/* 4-Step POS Flow Strip (Always visible so user sees the full Insert -> Auth -> Charge -> Receipt journey) */}
+              {/* 4-Step POS Flow Strip */}
               <div className="rounded-2xl bg-[#040B1A]/90 border border-white/10 p-4">
                 <div className="flex items-center justify-between text-[10px] font-mono text-teal mb-2.5">
-                  <span>END-TO-END TRANSACTION &amp; SERVICE FLOW</span>
+                  <span>END-TO-END PAYMENT FLOW</span>
                   <span>
                     {failoverSimulated
                       ? '⚡ FAILOVER ACTIVE: CORALPAY RAIL'
@@ -464,7 +452,7 @@ export default function CinematicServiceJourney() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="px-3 py-1 rounded-full bg-teal text-teal-ink text-xs font-extrabold font-outfit">
-                        SERVICE {scene.stepNumber}: {scene.servicePillar}
+                        {scene.servicePillar}
                       </span>
                       <span className="text-xs font-mono text-teal">
                         {scene.badge}
@@ -481,7 +469,7 @@ export default function CinematicServiceJourney() {
 
                     <div className="mt-4">
                       <span className="text-[10px] font-mono uppercase tracking-widest text-teal block mb-2">
-                        WHAT WE DELIVER IN THIS SERVICE:
+                        INCLUDED IN THIS ENGAGEMENT:
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {scene.deliverables.map((d) => (
@@ -497,19 +485,20 @@ export default function CinematicServiceJourney() {
                     </div>
                   </div>
 
+                  {/* High-Converting Action Buttons */}
                   <div className="pt-3 flex flex-wrap items-center gap-3">
                     <Link
-                      to={scene.pillarLink}
-                      className="btn-gradient font-semibold text-xs sm:text-sm py-2.5 px-6 rounded-full inline-flex items-center gap-1.5"
+                      to={`/contact?topic=${encodeURIComponent(scene.topic)}`}
+                      className="btn-gradient font-extrabold text-xs sm:text-sm py-3 px-6 rounded-full inline-flex items-center gap-1.5 shadow-lg"
                     >
-                      <span>Explore {scene.servicePillar}</span>
+                      <span>Discuss {scene.servicePillar}</span>
                       <span aria-hidden="true">→</span>
                     </Link>
                     <Link
                       to={`/case-studies/${scene.caseStudy.slug}`}
                       className="px-5 py-2.5 rounded-full bg-white/5 border border-white/15 hover:border-teal text-xs sm:text-sm font-semibold text-[#F4F7FB] hover:text-teal transition-colors"
                     >
-                      Live Proof: {scene.caseStudy.title} ↗
+                      See Proof: {scene.caseStudy.title} ↗
                     </Link>
                   </div>
                 </div>
@@ -520,11 +509,11 @@ export default function CinematicServiceJourney() {
                     <div>
                       <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                         <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-[#0256CD]">
-                          LIVE SYSTEM TELEMETRY
+                          TECHNICAL SPECIFICATIONS
                         </span>
                         <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                          IN MOTION
+                          VERIFIED
                         </span>
                       </div>
 
@@ -544,11 +533,11 @@ export default function CinematicServiceJourney() {
 
                     <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
                       <span className="text-slate-500 font-medium">
-                        Client: {scene.caseStudy.client}
+                        Live at: {scene.caseStudy.client}
                       </span>
                       <Link
-                        to="/contact"
-                        className="font-bold text-[#0256CD] hover:underline"
+                        to={`/contact?topic=${encodeURIComponent(scene.topic)}`}
+                        className="font-extrabold text-[#0256CD] hover:underline"
                       >
                         Request Demo →
                       </Link>

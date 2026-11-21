@@ -56,15 +56,18 @@ export default function SolutionCard({ solution }) {
         </ul>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-surface-border/70 flex items-center justify-between text-xs">
-        <span className="font-mono text-slate/75">
-          {solution.metrics?.deploymentWeeks || 'Production-ready'}
-        </span>
+      <div className="mt-6 pt-4 border-t border-surface-border/70 flex items-center justify-between gap-2 text-xs">
         <Link
           to={`/solutions#${solution.id}`}
-          className="font-semibold text-teal hover:underline inline-flex items-center gap-1"
+          className="font-medium text-slate hover:text-offwhite transition-colors"
         >
-          <span>Architecture</span>
+          Specs ({solution.metrics?.deploymentWeeks || 'Fast'})
+        </Link>
+        <Link
+          to={`/contact?topic=${encodeURIComponent(solution.title)}`}
+          className="font-extrabold text-teal hover:underline inline-flex items-center gap-1"
+        >
+          <span>Discuss This</span>
           <span aria-hidden="true">→</span>
         </Link>
       </div>
