@@ -1,8 +1,28 @@
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { company, media, trustBadges } from '../data/company.js'
 import TiltCard from './TiltCard.jsx'
 
 export default function LightInfrastructureSection() {
+  const [muted, setMuted] = useState(true)
+  const videoRef = useRef(null)
+
+  const toggleSound = () => {
+    const nextMuted = !muted
+    setMuted(nextMuted)
+    if (videoRef.current) {
+      videoRef.current.muted = nextMuted
+      if (!nextMuted) {
+        try {
+          videoRef.current.currentTime = 0
+          videoRef.current.play()
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }
+
   return (
     <section
       aria-label="Secure infrastructure for modern payment markets"
@@ -18,7 +38,7 @@ export default function LightInfrastructureSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Narrative Column */}
             <div className="lg:col-span-6 space-y-5">
-              {/* Top Partner Badges (Matches "HALBORN · RedStone" in Shot 1) */}
+              {/* Top Partner Badges */}
               <div className="flex flex-wrap items-center gap-2.5">
                 <span className="px-3 py-1 rounded-full bg-[#06122B] text-white text-xs font-extrabold tracking-wide">
                   PCI DSS CERTIFIED
@@ -40,10 +60,17 @@ export default function LightInfrastructureSection() {
                 <span className="text-[#0256CD] font-semibold">
                   {company.formerName}
                 </span>
-                , now incorporated as {company.legalName} (RC {company.rc}). We enable banks, microfinance institutions, and processors to run isolated POS fleets, multi-rail switching, and automated reconciliation with institutional-grade compliance.
+                , now incorporated as {company.legalName} (RC {company.rc}). From a market woman accepting an instant EMV card payment in Abuja to high-availability ISO 8583 switching for microfinance banks, our systems are built for zero-downtime settlement.
               </p>
 
               <div className="pt-3 flex flex-wrap items-center gap-5">
+                <Link
+                  to="/contact?topic=Enterprise%20POS%20%26%20Payment%20Infrastructure"
+                  className="btn-alula-cta font-extrabold text-xs sm:text-sm py-3 px-6 rounded-full inline-flex items-center gap-1.5 shadow-md"
+                >
+                  <span>Initiate Partnership</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
                 <Link
                   to="/about"
                   className="inline-flex items-center gap-1.5 text-sm font-bold text-[#06122B] hover:text-[#0256CD] transition-colors"
@@ -57,53 +84,37 @@ export default function LightInfrastructureSection() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-[#06122B] transition-colors"
                 >
-                  <span>Read capability statement</span>
+                  <span>Capability PDF</span>
                   <span aria-hidden="true">↗</span>
                 </a>
               </div>
             </div>
 
-            {/* Right Visual & Giant Metrics Column (Matches Shot 1 Right Side of White Card) */}
+            {/* Right Auto-Running Video & Giant Metrics Column */}
             <div className="lg:col-span-6 space-y-6">
-              {/* Glowing Dark Architecture Preview Frame inside White Card */}
-              <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-[#06122B] via-[#0D2A5C] to-[#040A18] p-6 text-white shadow-xl relative">
-                <div
-                  aria-hidden="true"
-                  className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-2xl opacity-60"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(54,224,200,0.5), transparent 70%)',
-                  }}
+              {/* Auto-Running Video Showcase inside White Card */}
+              <div className="rounded-2xl overflow-hidden bg-[#06122B] border-2 border-slate-200 shadow-xl relative group">
+                <video
+                  ref={videoRef}
+                  src="/media/market-woman-pos.mp4"
+                  poster="/media/market-woman-pos.jpg"
+                  autoPlay
+                  loop
+                  muted={muted}
+                  playsInline
+                  className="w-full aspect-video object-cover block"
                 />
-                <div className="relative z-10 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-teal block">
-                      BUILT BY PAYMENT ENGINEERS
-                    </span>
-                    <h3 className="text-lg font-bold font-outfit mt-1">
-                      Terminal → HAL → Switch → Ledger
-                    </h3>
-                  </div>
-                  <img
-                    src="/favicon.svg"
-                    alt="GWABS emblem"
-                    className="h-12 w-12 rounded-xl ring-2 ring-teal/40"
-                  />
-                </div>
-
-                <div className="relative z-10 mt-5 grid grid-cols-3 gap-2.5 text-center font-mono text-xs">
-                  <div className="rounded-xl bg-white/10 border border-white/15 p-2.5">
-                    <span className="text-teal font-bold block">EMV L1/L2</span>
-                    <span className="text-[10px] text-slate-300">POS Kernel</span>
-                  </div>
-                  <div className="rounded-xl bg-white/10 border border-white/15 p-2.5">
-                    <span className="text-teal font-bold block">ISO 8583</span>
-                    <span className="text-[10px] text-slate-300">jPOS Switch</span>
-                  </div>
-                  <div className="rounded-xl bg-white/10 border border-white/15 p-2.5">
-                    <span className="text-teal font-bold block">AES-256</span>
-                    <span className="text-[10px] text-slate-300">Zero-Trust</span>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={toggleSound}
+                  className={`absolute bottom-3 right-3 z-20 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold backdrop-blur-md border transition-all ${
+                    !muted
+                      ? 'bg-teal text-teal-ink border-white shadow-lg'
+                      : 'bg-[#06122B]/85 text-white border-teal/50 hover:bg-teal hover:text-teal-ink'
+                  }`}
+                >
+                  {!muted ? '🔊 Voiceover On' : '🔈 Unmute Voice'}
+                </button>
               </div>
 
               {/* Giant Metrics Row (Matches "$300M+ TVL / 5.4% APY" in Shot 1) */}
@@ -137,7 +148,7 @@ export default function LightInfrastructureSection() {
           </div>
         </TiltCard>
 
-        {/* Bottom "Partners & Ecosystem" Section on Light Background (Matches "Partners & Backers" in Shot 1) */}
+        {/* Bottom "Partners & Ecosystem" Section on Light Background */}
         <div className="mt-16 text-center">
           <h3 className="text-2xl sm:text-3xl font-extrabold text-[#06122B] font-outfit">
             Partners, Rails &amp; Ecosystem

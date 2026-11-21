@@ -11,6 +11,7 @@ import DeveloperShowcase from './DeveloperShowcase.jsx'
 import ScaleBanner from './ScaleBanner.jsx'
 import LightInfrastructureSection from './LightInfrastructureSection.jsx'
 import CinematicServiceJourney from './CinematicServiceJourney.jsx'
+import AutoVideoVoiceShowcase from './AutoVideoVoiceShowcase.jsx'
 
 const wrap = (ui) =>
   render(
@@ -87,5 +88,16 @@ describe('Dribbble-inspired sections & theme toggle', () => {
     const printBtn = screen.getByRole('button', { name: 'PRINT' })
     await user.click(printBtn)
     expect(screen.getByText(/GWABS POS RECEIPT/i)).toBeInTheDocument()
+  })
+
+  it('AutoVideoVoiceShowcase renders market woman POS story and toggles voice narration', async () => {
+    const user = userEvent.setup()
+    wrap(<AutoVideoVoiceShowcase />)
+    expect(
+      screen.getByRole('heading', { name: /Market Woman Selling & Customer Paying Instantly/i })
+    ).toBeInTheDocument()
+    const voiceBtn = screen.getByRole('button', { name: /Enable AI Voice Narration/i })
+    await user.click(voiceBtn)
+    expect(screen.getByText(/AI Voice Narration: ON/i)).toBeInTheDocument()
   })
 })
