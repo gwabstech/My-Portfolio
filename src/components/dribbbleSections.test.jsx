@@ -10,6 +10,7 @@ import InstitutionalPerformance from './InstitutionalPerformance.jsx'
 import DeveloperShowcase from './DeveloperShowcase.jsx'
 import ScaleBanner from './ScaleBanner.jsx'
 import LightInfrastructureSection from './LightInfrastructureSection.jsx'
+import CinematicServiceJourney from './CinematicServiceJourney.jsx'
 
 const wrap = (ui) =>
   render(
@@ -74,5 +75,17 @@ describe('Dribbble-inspired sections & theme toggle', () => {
     expect(
       screen.getByText(/Secure infrastructure for modern payment markets/i)
     ).toBeInTheDocument()
+  })
+
+  it('CinematicServiceJourney renders interactive POS simulator and switches stages', async () => {
+    const user = userEvent.setup()
+    wrap(<CinematicServiceJourney />)
+    expect(screen.getByText(/Watch Our Services in Action/i)).toBeInTheDocument()
+    const failoverBtn = screen.getByRole('button', { name: /Simulate Switch Failover/i })
+    await user.click(failoverBtn)
+    expect(screen.getByText(/Failover Active \(CoralPay\)/i)).toBeInTheDocument()
+    const printBtn = screen.getByRole('button', { name: 'PRINT' })
+    await user.click(printBtn)
+    expect(screen.getByText(/GWABS POS RECEIPT/i)).toBeInTheDocument()
   })
 })
