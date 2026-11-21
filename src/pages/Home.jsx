@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useDocumentTitle } from '../lib/seo.js'
 import Hero from '../components/Hero.jsx'
 import TrustBar from '../components/TrustBar.jsx'
+import CinematicServiceJourney from '../components/CinematicServiceJourney.jsx'
 import SolutionsExplorer from '../components/SolutionsExplorer.jsx'
 import HowItWorks from '../components/HowItWorks.jsx'
 import InstitutionalPerformance from '../components/InstitutionalPerformance.jsx'
@@ -30,19 +31,16 @@ export default function Home() {
 
   return (
     <main className="overflow-hidden">
-      {/* 1. Combined Dribbble Hero (3D Shield + Floating Hexagonal Pillar Nodes) */}
+      {/* 1. First-Glance Hero: Auto-Rolling 4-Service Matrix + 3D Shield & Live POS Stage */}
       <Hero />
 
       {/* 2. Categorized 3-Column Ecosystem & Compliance Trust Bar */}
       <TrustBar />
 
-      {/* 3. Interactive Split Dark/White Solutions & Deployment Configurator ("Live Markets" Shot 1) */}
-      <SolutionsExplorer />
+      {/* 3. Auto-Rolling Cinematic Service Walkthrough & Live POS-in-Action Simulator */}
+      <CinematicServiceJourney />
 
-      {/* 4. 3-Step Connected Process Flow ("How it Works" Shot 1 & 2) */}
-      <HowItWorks />
-
-      {/* 5. 4-Pillar Engineering Grid ("What we do") */}
+      {/* 4. 4-Pillar Engineering Grid ("What we do") */}
       <section className="container mx-auto px-6 py-20 3xl:py-28">
         <div className="max-w-2xl mx-auto text-center">
           <span className="text-xs font-mono uppercase tracking-[0.2em] text-teal">
@@ -62,13 +60,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. Auto-Playing Institutional Performance Carousel ("Built for Institutional Performance" Shot 2) */}
+      {/* 5. Interactive Split Dark/White Solutions & Deployment Configurator */}
+      <SolutionsExplorer />
+
+      {/* 6. 3-Step Connected Process Flow ("How it Works") */}
+      <HowItWorks />
+
+      {/* 7. Auto-Playing Institutional Performance Carousel */}
       <InstitutionalPerformance />
 
-      {/* 7. Developer & SDK Code Preview ("Build on Alula" Shot 1 Top-Right) */}
+      {/* 8. Developer & SDK Code Preview ("Build on GWABS") */}
       <DeveloperShowcase />
 
-      {/* 8. Featured Work & Production Deployments Showcase */}
+      {/* 9. Featured Work & Production Deployments Showcase */}
       <section className="bg-navy-deep/80 border-y border-surface-border py-20 3xl:py-28">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -124,16 +128,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 9. Scale Operations Banner + 3-Column Divider Strip (Shot 1 & 2 Right) */}
+      {/* 10. Scale Operations Banner + 3-Column Divider Strip */}
       <ScaleBanner />
 
-      {/* 10. High-Contrast Light Section ("Secure infrastructure for modern payment markets" Shot 1 Bottom-Right) */}
+      {/* 11. High-Contrast Light Section ("Secure infrastructure for modern payment markets") */}
       <LightInfrastructureSection />
 
-      {/* 11. Explainer Video Walkthrough */}
+      {/* 12. Explainer Video Walkthrough */}
       <ExplainerVideo />
 
-      {/* 12. Stats Band & Final Consultation CTA */}
+      {/* 13. Stats Band & Final Consultation CTA */}
       <StatsBand />
       <CTASection />
     </main>
