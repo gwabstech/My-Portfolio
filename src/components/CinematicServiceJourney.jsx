@@ -195,16 +195,12 @@ export default function CinematicServiceJourney() {
         {/* Top Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal/15 border border-teal/40 text-xs font-mono font-bold text-teal mb-3">
-              <span className="w-2 h-2 rounded-full bg-teal animate-ping" />
-              <span>3D ORBITAL &amp; SCROLL-DRIVEN SERVICE WALKTHROUGH</span>
-            </div>
             <h2 className="text-3xl sm:text-4xl 3xl:text-5xl font-extrabold text-offwhite font-outfit leading-tight">
               Watch Our Services in Action:{' '}
               <span className="text-gradient">Card Insert → Auth → Charge → Receipt</span>
             </h2>
             <p className="mt-3 text-slate text-sm sm:text-base">
-              Flows automatically in continuous 3D motion and responds as you scroll — watch a customer insert their EMV card, authorize PIN, get charged via our ISO 8583 switch, and receive an instant printed thermal receipt.
+              From a customer inserting their EMV card and authorizing PIN to ISO 8583 switch routing and instant thermal receipt printing across our full payments stack.
             </p>
           </div>
 

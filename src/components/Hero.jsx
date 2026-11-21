@@ -107,21 +107,11 @@ export default function Hero() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-base sm:text-lg 3xl:text-xl text-slate leading-relaxed">
-              {company.whatWeDo} Watch our live 3D POS terminal insert a customer card, authorize PIN, route ISO 8583, and print a thermal receipt — or click any service below to see its 3D engine in motion.
+              {company.whatWeDo} We engineer the complete payments stack for Nigerian banks, microfinance institutions, processors, and fleet operators.
             </p>
 
-            {/* AT FIRST GLANCE: Interactive Auto-Rolling 4-Service Matrix */}
+            {/* Core Services Matrix */}
             <div className="mt-6">
-              <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-teal mb-2.5">
-                <span>WHAT WE OFFER AT A GLANCE (CLICK TO SWITCH 3D STAGE):</span>
-                <a
-                  href="#service-journey"
-                  className="underline hover:text-offwhite transition-colors"
-                >
-                  Scroll 3D Orbital Walkthrough ↓
-                </a>
-              </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {HERO_SERVICES.map((srv, idx) => {
                   const isSelected = idx === activeIdx
@@ -205,11 +195,11 @@ export default function Hero() {
                 className="absolute inset-x-0 bottom-0 h-60 bg-perspective-grid opacity-50 pointer-events-none"
               />
 
-              {/* Top 3D Stage Selector Header */}
+              {/* Top Stage Selector Header */}
               <div className="relative z-30 flex items-center justify-between gap-2 text-[10px] font-mono text-[#9FB2D0] px-3 py-1.5 rounded-full bg-[#050E21]/90 border border-white/10">
                 <span className="flex items-center gap-1.5 text-teal font-bold">
                   <span className="w-2 h-2 rounded-full bg-teal animate-ping" />
-                  3D ORBITAL STAGE ({activeService.step}/04)
+                  {activeService.label} ({activeService.step}/04)
                 </span>
                 <div className="flex items-center gap-1">
                   {HERO_SERVICES.map((s, idx) => (
