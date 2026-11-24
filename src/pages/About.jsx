@@ -41,9 +41,9 @@ const MILESTONES = [
   },
   {
     phase: 'Live Production Scale',
-    title: '11+ Shipped Platforms & MFB POS-as-a-Service',
+    title: '14+ Shipped Platforms, SoftPOS & MFB POS-as-a-Service',
     detail:
-      'Powering Gwabs Business Suite (gbs.ng), Reconcile LMS (reconcile.ng), Okada FleetOS (okadaos.ng), and managed POS/switching stacks for Otech MFB, Regent MFB, and Bellbank MFB.',
+      'Powering GWABS SoftPOS (EMV L2 Tap-to-Phone), CPay (ISO 8583 Switch & S60 POS), OneClick (Social Commerce & Business Banking), Gwabs Business Suite (gbs.ng), Reconcile LMS (reconcile.ng), Okada FleetOS (okadaos.ng), and managed POS/switching stacks for Otech MFB, Regent MFB, and Bellbank MFB.',
   },
 ]
 
@@ -84,7 +84,7 @@ export default function About() {
                   to="/case-studies"
                   className="px-6 py-3.5 rounded-full glass-card border border-surface-border hover:border-teal text-sm font-semibold text-offwhite hover:text-teal transition-colors"
                 >
-                  Inspect 11+ Case Studies →
+                  Inspect 14+ Case Studies →
                 </Link>
               </div>
             </div>

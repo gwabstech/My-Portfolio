@@ -121,7 +121,7 @@ export default function LightInfrastructureSection() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-2 px-2">
                 <div>
                   <span className="text-3xl sm:text-4xl font-extrabold font-outfit text-[#06122B]">
-                    11+
+                    14+
                   </span>
                   <span className="text-xs font-mono uppercase text-slate-500 block mt-0.5">
                     Shipped Systems
@@ -137,10 +137,10 @@ export default function LightInfrastructureSection() {
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <span className="text-3xl sm:text-4xl font-extrabold font-outfit text-[#0256CD]">
-                    3+ HALs
+                    4+ HALs
                   </span>
                   <span className="text-xs font-mono uppercase text-slate-500 block mt-0.5">
-                    Vendor SDKs
+                    POS &amp; SoftPOS SDKs
                   </span>
                 </div>
               </div>

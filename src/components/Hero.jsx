@@ -195,10 +195,10 @@ export default function Hero() {
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate">
               <span className="inline-flex items-center gap-1.5 text-offwhite font-semibold">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                11+ Live Systems in Production
+                14+ Live Systems in Production
               </span>
               <span>•</span>
-              <span>Powering Otech MFB, Regent MFB, Bellbank &amp; TeasyPay</span>
+              <span>Powering CPay, OneClick, Otech MFB, Regent MFB &amp; Bellbank</span>
             </div>
           </div>
 
