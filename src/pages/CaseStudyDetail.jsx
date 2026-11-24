@@ -2,7 +2,6 @@ import { useParams, Link } from 'react-router-dom'
 import { useDocumentTitle } from '../lib/seo.js'
 import { caseStudies, getCaseStudy } from '../data/caseStudies.js'
 import { solutions } from '../data/solutions.js'
-import CaseStudyCover from '../components/CaseStudyCover.jsx'
 import LivePreview from '../components/LivePreview.jsx'
 import TiltCard from '../components/TiltCard.jsx'
 
@@ -146,12 +145,30 @@ export default function CaseStudyDetail() {
               style={{ border: 0 }}
             />
           </div>
-        ) : study.liveUrl ? (
-          <LivePreview url={study.liveUrl} pillarId={study.pillarId} title={study.title} />
+        ) : study.liveUrl || study.previewUrl ? (
+          <LivePreview
+            key={study.slug}
+            url={study.liveUrl || study.previewUrl}
+            previewImage={study.previewImage}
+            pillarId={study.pillarId}
+            title={study.title}
+            badgeText={study.liveUrl ? 'LIVE' : 'CLIENT SITE'}
+            isLive={Boolean(study.liveUrl)}
+          />
         ) : (
-          <div className="mt-8 aspect-video rounded-3xl overflow-hidden border border-surface-border shadow-2xl">
-            <CaseStudyCover pillarId={study.pillarId} className="w-full h-full" />
-          </div>
+          <LivePreview
+            key={study.slug}
+            previewImage={study.previewImage}
+            pillarId={study.pillarId}
+            title={study.title}
+            subtitle={
+              study.clientUrl
+                ? study.clientUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+                : `${study.client} · System Preview`
+            }
+            badgeText={study.status || 'PREVIEW'}
+            isLive={false}
+          />
         )}
 
         {/* 3-Card Structured Breakdown: Problem, Solution, Impact (with Light Contrast Highlight on Impact) */}

@@ -1,46 +1,95 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CaseStudyCover from './CaseStudyCover.jsx'
 
-// A browser-framed preview card for a live product site. Shows an on-demand
-// screenshot of the site (most live sites block iframing), falling back to the
-// branded cover art if the screenshot service is unavailable.
-export default function LivePreview({ url, pillarId, title }) {
-  const [failed, setFailed] = useState(false)
-  const host = url.replace(/^https?:\/\//, '').replace(/\/$/, '')
-  const screenshot = `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`
+// Browser-framed preview card for case studies. Uses verified local screenshots
+// first (never rate-limited), falling back to mshots for external live URLs
+// and then branded CaseStudyCover SVG if all image sources fail.
+export default function LivePreview({
+  url,
+  pillarId,
+  title,
+  previewImage,
+  subtitle,
+  badgeText = 'LIVE',
+  isLive = true,
+}) {
+  const [sourceIndex, setSourceIndex] = useState(0)
 
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block mt-8 rounded-2xl overflow-hidden border border-surface-border shadow-2xl group"
-      aria-label={`Open the live ${title} site at ${host}`}
-    >
+  useEffect(() => {
+    setSourceIndex(0)
+  }, [url, previewImage])
+
+  const host = url ? url.replace(/^https?:\/\//, '').replace(/\/$/, '') : subtitle || title
+  const sources = [
+    previewImage || null,
+    url ? `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=1280` : null,
+  ].filter(Boolean)
+
+  const currentSrc = sources[sourceIndex]
+
+  const content = (
+    <>
       <div className="flex items-center gap-2 px-4 py-2.5 bg-surface border-b border-surface-border">
-        <span className="flex gap-1.5" aria-hidden="true">
-          <span className="w-3 h-3 rounded-full bg-red-400/70" />
-          <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
-          <span className="w-3 h-3 rounded-full bg-green-400/70" />
+        <span className="flex gap-1.5 shrink-0" aria-hidden="true">
+          <span className="w-3 h-3 rounded-full bg-red-400/75" />
+          <span className="w-3 h-3 rounded-full bg-yellow-400/75" />
+          <span className="w-3 h-3 rounded-full bg-green-400/75" />
         </span>
-        <span className="flex-1 mx-2 text-xs text-slate bg-navy rounded-md px-3 py-1 truncate">{host}</span>
-        <span className="text-[10px] font-bold text-teal flex items-center gap-1 shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" /> LIVE
+        <span className="flex-1 mx-2 text-xs font-mono text-slate bg-navy border border-surface-border/70 rounded-md px-3 py-1 truncate">
+          {host}
+        </span>
+        <span
+          className={`text-[10px] font-bold uppercase tracking-wide flex items-center gap-1.5 shrink-0 ${
+            isLive ? 'text-teal' : 'text-slate'
+          }`}
+        >
+          {isLive && <span className="w-1.5 h-1.5 rounded-full bg-teal animate-pulse" />}
+          {badgeText}
         </span>
       </div>
-      <div className="aspect-video bg-navy-deep">
-        {failed ? (
-          <CaseStudyCover pillarId={pillarId} className="w-full h-full" />
-        ) : (
+
+      <div className="aspect-video bg-navy-deep relative overflow-hidden">
+        {currentSrc ? (
           <img
-            src={screenshot}
-            alt={`Live preview of ${title}`}
+            src={currentSrc}
+            alt={`Preview of ${title}`}
             loading="lazy"
-            onError={() => setFailed(true)}
-            className="w-full h-full object-cover object-top group-hover:opacity-95 transition-opacity"
+            onError={() => setSourceIndex((i) => i + 1)}
+            className="w-full h-full object-cover object-top group-hover:scale-[1.01] transition-transform duration-500"
           />
+        ) : (
+          <CaseStudyCover pillarId={pillarId} className="w-full h-full" />
+        )}
+
+        {url && (
+          <span className="pointer-events-none absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-[#040A18]/85 border border-teal/40 text-[11px] font-mono font-semibold text-[#F4F7FB] shadow-lg backdrop-blur-sm opacity-90 group-hover:opacity-100 group-hover:border-teal transition-all">
+            {isLive ? 'Visit live site ↗' : 'Open client site ↗'}
+          </span>
         )}
       </div>
-    </a>
+    </>
+  )
+
+  if (url) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block mt-8 rounded-3xl overflow-hidden border border-surface-border shadow-2xl group hover:border-teal/50 transition-colors"
+        aria-label={`Open ${title} at ${host}`}
+      >
+        {content}
+      </a>
+    )
+  }
+
+  return (
+    <div
+      className="mt-8 rounded-3xl overflow-hidden border border-surface-border shadow-2xl group"
+      aria-label={`Preview of ${title}`}
+    >
+      {content}
+    </div>
   )
 }

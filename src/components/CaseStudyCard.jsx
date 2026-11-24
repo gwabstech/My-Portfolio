@@ -1,8 +1,17 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CaseStudyCover from './CaseStudyCover.jsx'
 import TiltCard from './TiltCard.jsx'
 
 export default function CaseStudyCard({ study }) {
+  const [imgFailed, setImgFailed] = useState(false)
+
+  useEffect(() => {
+    setImgFailed(false)
+  }, [study.previewImage])
+
+  const showImage = Boolean(study.previewImage && !imgFailed)
+
   return (
     <TiltCard intensity={9} className="rounded-2xl flex flex-col h-full">
       <Link
@@ -10,11 +19,28 @@ export default function CaseStudyCard({ study }) {
         className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between h-full group"
       >
         <div>
-          <div className="relative overflow-hidden">
-            <CaseStudyCover
-              pillarId={study.pillarId}
-              className="h-36 2xl:h-44 w-full group-hover:scale-105 transition-transform duration-500"
-            />
+          <div className="relative overflow-hidden bg-navy-deep">
+            {showImage ? (
+              <>
+                <img
+                  src={study.previewImage}
+                  alt={`${study.title} preview`}
+                  loading="lazy"
+                  onError={() => setImgFailed(true)}
+                  className="h-44 2xl:h-48 w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#040A18]/75 via-[#040A18]/25 to-transparent"
+                  aria-hidden="true"
+                />
+              </>
+            ) : (
+              <CaseStudyCover
+                pillarId={study.pillarId}
+                className="h-44 2xl:h-48 w-full group-hover:scale-105 transition-transform duration-500"
+              />
+            )}
+
             {study.liveUrl ? (
               <span className="absolute top-3 right-3 flex items-center gap-1.5 text-[10px] font-bold text-teal-ink bg-teal rounded-full px-2.5 py-0.5 shadow-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-ink animate-pulse" /> LIVE
@@ -22,6 +48,10 @@ export default function CaseStudyCard({ study }) {
             ) : study.status ? (
               <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wide text-[#F4F7FB] bg-[#040A18]/85 border border-teal/35 rounded-full px-2.5 py-0.5 backdrop-blur-sm">
                 {study.status}
+              </span>
+            ) : study.media?.type === 'youtube' ? (
+              <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wide text-[#F4F7FB] bg-[#040A18]/85 border border-teal/35 rounded-full px-2.5 py-0.5 backdrop-blur-sm">
+                VIDEO DEMO
               </span>
             ) : null}
           </div>

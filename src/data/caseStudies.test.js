@@ -79,4 +79,15 @@ describe('case studies data', () => {
     expect(oneclick.clientUrl).toBe('https://theoneclick.ng')
     expect(oneclick.pillarId).toBe('software')
   })
+  it('each case study has a local previewImage path', () => {
+    for (const c of caseStudies) {
+      expect(c.previewImage).toMatch(/^\/images\/previews\/[a-z0-9-]+\.(jpg|png|webp)$/)
+    }
+  })
+  it('publishes no internal agreements, commercial splits, or confidential IDs', () => {
+    const serialized = JSON.stringify(caseStudies)
+    expect(serialized).not.toMatch(
+      /65\/35|65%|35%|CPM00001|50-POS|House wallets|MERCHANT_KYC_REQUIRED|contract awarded|Xtratech|TransitSeal|GWABSQR1|txn-gateway|attestation-service/i
+    )
+  })
 })
