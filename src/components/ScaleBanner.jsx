@@ -70,7 +70,7 @@ export default function ScaleBanner() {
                 to="/case-studies"
                 className="px-7 py-3.5 rounded-full border border-white/20 text-[#F4F7FB] hover:border-teal hover:text-teal text-sm sm:text-base font-semibold transition-colors"
               >
-                Inspect 11+ Live Deployments
+                Inspect 14+ Live Deployments
               </Link>
             </div>
           </div>

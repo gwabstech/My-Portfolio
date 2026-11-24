@@ -30,30 +30,33 @@ export const trustBadges = [
   "Topwise",
   "Urovo",
   "Blumen",
+  "Horizon S60",
   "Otech MFB",
   "Regent MFB",
+  "CPay",
+  "OneClick",
 ];
 
 export const trustCategories = [
   {
     label: "Payment Rails & Standards",
-    items: ["NIBSS", "Interswitch", "ISO 8583", "EMV"],
+    items: ["NIBSS", "Interswitch", "ISO 8583", "EMV", "SoftPOS L2"],
   },
   {
     label: "Security & Terminal Hardware",
-    items: ["PCI DSS", "Topwise", "Urovo", "Blumen"],
+    items: ["PCI DSS", "Topwise", "Urovo", "Blumen", "Horizon S60"],
   },
   {
-    label: "Production Banking Partners",
-    items: ["Otech MFB", "Regent MFB", "Bellbank MFB", "TeasyPay"],
+    label: "Production Banking & Fintech Partners",
+    items: ["Otech MFB", "Regent MFB", "Bellbank MFB", "CPay", "OneClick", "TeasyPay"],
   },
 ];
 
 export const stats = [
-  { value: "3+", label: "POS device platforms", detail: "Topwise, Urovo & Blumen HAL" },
-  { value: "8+", label: "Processor integrations", detail: "NIBSS, Interswitch, CoralPay & more" },
-  { value: "PCI DSS", label: "Certified expertise", detail: "DUKPT, AES-256-GCM & CBN compliance" },
-  { value: "Live", label: "Production deployments", detail: "11+ shipped banking & SaaS systems" },
+  { value: "4+", label: "POS & SoftPOS platforms", detail: "Topwise, Urovo, Blumen, S60 & NFC Tap" },
+  { value: "8+", label: "Processor integrations", detail: "NIBSS, Interswitch, Xtratech, CoralPay & more" },
+  { value: "PCI DSS", label: "Certified expertise", detail: "AES-DUKPT, RASP, AES-256-GCM & CBN compliance" },
+  { value: "14+", label: "Production deployments", detail: "14+ shipped banking, SoftPOS & SaaS systems" },
 ];
 
 export const media = {

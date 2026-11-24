@@ -3,8 +3,8 @@ import { caseStudies, getCaseStudy } from './caseStudies.js'
 import { solutions } from './solutions.js'
 
 describe('case studies data', () => {
-  it('has 11 flagships', () => {
-    expect(caseStudies).toHaveLength(11)
+  it('has 14 flagships', () => {
+    expect(caseStudies).toHaveLength(14)
   })
   it('each has the required fields', () => {
     for (const c of caseStudies) {
@@ -62,5 +62,21 @@ describe('case studies data', () => {
     expect(otech.clientUrl).toBe('https://www.otechbank.com')
     expect(otech.liveUrl).toBeUndefined()
     expect(otech.status).toBeTruthy()
+  })
+  it('includes GWABS SoftPOS, CPay, and OneClick flagship projects', () => {
+    const softpos = getCaseStudy('gwabs-softpos-platform')
+    expect(softpos.title).toMatch(/SoftPOS/)
+    expect(softpos.isOwnProduct).toBe(true)
+    expect(softpos.pillarId).toBe('sdks')
+
+    const cpay = getCaseStudy('cpay-merchant-and-pos-switch')
+    expect(cpay.title).toMatch(/CPay/)
+    expect(cpay.clientUrl).toBe('https://cedricspay.com')
+    expect(cpay.pillarId).toBe('switching')
+
+    const oneclick = getCaseStudy('oneclick-commerce-and-payments')
+    expect(oneclick.title).toMatch(/OneClick/)
+    expect(oneclick.clientUrl).toBe('https://theoneclick.ng')
+    expect(oneclick.pillarId).toBe('software')
   })
 })
